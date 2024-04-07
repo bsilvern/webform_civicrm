@@ -113,13 +113,13 @@ class CivicrmSelectOptions extends FormElement {
     $webform = $form_state->getFormObject()->getWebform();
     $data = $webform->getHandler('webform_civicrm')->getConfiguration()['settings']['data'] ?? [];
 
-    //$current_options is an array of [value => webform_label] listed in the order defined in the webform.
-    //Options disabled in the webform are absent from this array.
+    // $current_options is an array of [value => webform_label] listed in the order defined in the webform.
+    // Options disabled in the webform are absent from this array.
     $current_options = $element['#default_value'];
 
     if (!$element['#civicrm_live_options']) {
-      //$all_options is an array of [value => civi_label] listed in the order defined in civicrm.
-      //Options disabed in civi are absent from this array, but it includes options disabled in the webform.
+      // $all_options is an array of [value => civi_label] listed in the order defined in civicrm.
+      // Options disabed in civi are absent from this array, but it includes options disabled in the webform.
       $all_options = static::getFieldOptions($element['#form_key'], $data);
       
       //build the $field_options array using the order of $current_options, using the labels specified in the webform.

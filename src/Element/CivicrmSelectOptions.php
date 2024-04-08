@@ -121,21 +121,21 @@ class CivicrmSelectOptions extends FormElement {
       // $all_options is an array of [value => civi_label] listed in the order defined in civicrm.
       // Options disabed in civi are absent from this array, but it includes options disabled in the webform.
       $all_options = static::getFieldOptions($element['#form_key'], $data);
-      
-      //build the $field_options array using the order of $current_options, using the labels specified in the webform.
+
+      // build the $field_options array using the order of $current_options, using the labels specified in the webform.
       foreach ($current_options as $key => $option) {
         $field_options[$key] = $all_options[$key];
       }
 
-      //Add to the $field_options array any options that are disabled in the webform. 
-      //The order of the disabled options cannot be changed, and they will always
-      //appear below the enabled options.
+      // Add to the $field_options array any options that are disabled in the webform.
+      // The order of the disabled options cannot be changed, and they will always
+      // appear below the enabled options.
       foreach ($all_options as $key => $option) {
         if (!isset($field_options[$key])) {
           $field_options[$key] = $all_options[$key];
         }
       }
-    } else { //static options
+    } else { // static options
       $field_options = static::getFieldOptions($element['#form_key'], $data);
     }
 
@@ -186,16 +186,16 @@ class CivicrmSelectOptions extends FormElement {
         '#attributes' => ['class' => ['weight']],
         '#access' => !$element['#civicrm_live_options'],
 
-        //delta theoretically should control the number of items in the weight dropdown for each option, but
-        //in reality that weight range seems to be fixed at -10 to +10. When there are more than 10 options present,
-        //the weight dropdown therefore cannot be used to move an option below the 10th spot. In addition,
-        //a bug related to this fixed -10 to +10 range prevents dragging options below the 22nd spot.
-        //Therefore, when there are more than 10 options present, it's desireable to switch from a weight
-        //listbox to an integer edit box. This is accomplished by setting
-        //delta to a value greater than Drupal::config('system.site')->get('weight_select_max') (default value 100) 
-        //See Drupal\Core\Render\Element\Weight::processWeight()
-        //Other than that threshold, the value specified here for delta is not significent.
-        '#delta' => !$element['#civicrm_live_options'] && sizeof($all_options) > 10 ? '101' : "10", 
+        // delta theoretically should control the number of items in the weight dropdown for each option, but
+        // in reality that weight range seems to be fixed at -10 to +10. When there are more than 10 options present,
+        // the weight dropdown therefore cannot be used to move an option below the 10th spot. In addition,
+        // a bug related to this fixed -10 to +10 range prevents dragging options below the 22nd spot.
+        // Therefore, when there are more than 10 options present, it's desireable to switch from a weight
+        // listbox to an integer edit box. This is accomplished by setting
+        // delta to a value greater than Drupal::config('system.site')->get('weight_select_max') (default value 100)
+        // See Drupal\Core\Render\Element\Weight::processWeight()
+        // Other than that threshold, the value specified here for delta is not significent.
+        '#delta' => !$element['#civicrm_live_options'] && sizeof($all_options) > 10 ? '101' : "10",
       ];
       $weight++;
     }

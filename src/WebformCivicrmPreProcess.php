@@ -145,7 +145,10 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
       if ($existing_component && empty($submitted_contacts[$c])) {
         // When the contact has been manually selected/entered and the form has therefore been filled via
         // an ajax request, we must make the selected contact_id value available to findContact()
-        $this->ent['contact'][$c]['id'] = $this->form_state->getUserInput()[$existing_component['#form_key']];
+        $user_input = $this->form_state->getUserInput();
+        if (isset($user_input[$existing_component['#form_key']])) {
+          $this->ent['contact'][$c]['id'] = $user_input[$existing_component['#form_key']];
+        }
         $this->findContact($existing_component);
       }
       // Fill cid with '0' if unknown

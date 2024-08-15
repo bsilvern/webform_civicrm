@@ -91,6 +91,7 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
     }
     $submitted_contacts = [];
     // Keep track of cids across multipage forms
+    // @TODO this block appears to be left over from D7 and is never executed(?)
     if (!empty($this->form_state->getValue('submitted')) && $this->form_state->get(['webform','page_count']) > 1) {
       foreach ($this->enabled as $k => $v) {
         // @TODO review the usage of the existing element.
@@ -125,6 +126,7 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
       return;
     }
     // If this is an edit op, use the original IDs and return
+    // @TODO this block appears to be left over from D7 and is never executed(?)
     if (isset($this->form['#submission']->sid) && $this->form['#submission']->is_draft != '1') {
       if (isset($this->form['#submission']->civicrm)) {
         $this->form_state['civicrm']['ent'] = $this->form['#submission']->civicrm;
@@ -137,17 +139,20 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
     }
 
     // Search for existing contacts
+    $user_input = $this->form_state->getUserInput();
     $counts_count = count($this->data['contact']);
     for ($c = 1; $c <= $counts_count; ++$c) {
       $this->ent['contact'][$c] = wf_crm_aval($this->ent, "contact:$c", []);
       $existing_component = $this->node->getElement("civicrm_{$c}_contact_1_contact_existing");
-      // Search for contact if the user hasn't already chosen one
-      if ($existing_component && empty($submitted_contacts[$c])) {
-        $this->findContact($existing_component);
+      // Ensure that a user-entered cid overrides any default created during the page load
+      $cid_user_input = $user_input["civicrm_{$c}_contact_1_contact_existing"] ?? null;
+      if ($existing_component) {
+        $this->findContact($existing_component, $cid_user_input);
       }
       // Fill cid with '0' if unknown
       $this->ent['contact'][$c] += ['id' => 0];
     }
+
     // Search for other existing entities
     if (empty($this->form_state->get('civicrm'))) {
       if (!empty($this->data['case']['number_of_case'])) {

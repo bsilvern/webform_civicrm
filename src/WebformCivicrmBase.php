@@ -255,12 +255,19 @@ abstract class WebformCivicrmBase {
    * @param array $component
    *   Webform component of type 'civicrm_contact'
    */
-  protected function findContact($component) {
+  protected function findContact($component, $cid_submitted_value = null) {
     $contactComponent = \Drupal::service('webform_civicrm.contact_component');
     $component['#form_key'] = $component['#form_key'] ?? $component['#webform_key'];
 
     list(, $c,) = explode('_', $component['#form_key'], 3);
     $filters = $contactComponent->wf_crm_search_filters($this->node, $component);
+
+    // If a valid cid value is being submitted for the existing contact, then no need to continue.
+    if (!empty($cid_submitted_value) && $contactComponent->wf_crm_contact_access($component, $filters, $cid_submitted_value) != FALSE) {
+      $this->ent['contact'][$c]['id'] = $cid_submitted_value;
+      return;
+    }
+
     // Start with the url - that trumps everything.
     $element_manager = \Drupal::getContainer()->get('plugin.manager.webform.element');
     $existing_component_plugin = $element_manager->getElementInstance($component);

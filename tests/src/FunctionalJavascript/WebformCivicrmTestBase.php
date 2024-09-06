@@ -516,6 +516,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     if (!empty($params['hide_fields'])) {
       $this->getSession()->getPage()->selectFieldOption('properties[hide_fields][]', $params['hide_fields']);
     }
+    if (!empty($params['hide_method'])) {
+      $this->getSession()->getPage()->selectFieldOption('properties[hide_method]', $params['hide_method']);
+    }
     if (!empty($params['submit_disabled'])) {
       $this->getSession()->getPage()->checkField("properties[submit_disabled]");
     }
@@ -552,6 +555,10 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       $this->assertSession()->assertWaitOnAjaxRequest();
       $this->getSession()->getPage()->selectFieldOption('Set default contact from', $params['default']);
 
+      if ($params['default'] == 'Specified Contact') {
+        $this->getSession()->getPage()->fillField('default-contact-id', $params['default_contact_id']);
+      }
+
       if ($params['default'] == 'relationship') {
         $this->getSession()->getPage()->selectFieldOption('properties[default_relationship_to]', $params['default_relationship']['default_relationship_to']);
         $this->assertSession()->assertWaitOnAjaxRequest();
@@ -580,6 +587,13 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-validation"]')->click();
       $this->getSession()->getPage()->checkField('properties[required]');
     }
+
+    // Wait for ajax message from previous click of Save button to no longer be
+    // visible to avoid falling through the following waitForElementVisible
+    // prematurely.
+    do {
+      $ajax_message_visible = $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages', 100);
+    } while ($ajax_message_visible);
 
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages');

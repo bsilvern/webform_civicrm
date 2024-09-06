@@ -112,21 +112,33 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
     // Even though this object is destroyed between page submissions, this trick allows us to persist some data - see below
     $this->ent = $form_state->get(['civicrm', 'ent']) ?: $this->ent;
 
+    $this->getExistingContactIds();
+
     $errors = $this->form_state->getErrors();
     foreach ($errors as $key => $error) {
-      $pieces = $this->utils->wf_crm_explode_key(substr($key, strrpos($key, '][') + 2));
+      $bracket_pos = strrpos($key, '][');
+      $pieces = $this->utils->wf_crm_explode_key($bracket_pos === false ? $key : substr($key, $bracket_pos + 2));
       if ($pieces) {
         [ , $c, $ent, $n, $table, $name] = $pieces;
         if ($this->isFieldHiddenByExistingContactSettings($ent, $c, $table, $n, $name)) {
-          $this->unsetError($key);
+          $errors_to_clear[$key] = 1;
         }
         elseif ($table === 'address' && !empty($this->crmValues["civicrm_{$c}_contact_{$n}_address_master_id"])) {
           $master_id = $this->crmValues["civicrm_{$c}_contact_{$n}_address_master_id"];
           // If widget is checkboxes, need to filter the array
           if (!is_array($master_id) || array_filter($master_id)) {
-            $this->unsetError($key);
+            $errors_to_clear[$key] = 1;
           }
         }
+      }
+    }
+
+    // Clear the unwanted errors
+    if (!empty($errors_to_clear)) {
+      $this->form_state->clearErrors();
+      $errors = array_diff_key($errors, $errors_to_clear);
+      foreach ($errors as $name => $error_message) {
+        $this->form_state->setErrorByName($name, $error_message);
       }
     }
 
@@ -192,12 +204,28 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
     // Fill $this->id from existing contacts
     $this->getExistingContactIds();
 
+    $this->fillDataFromSubmission();
+
+    // If we've loaded a draft, then performing a subsequent Submit or Save
+    // Draft throws an array-to-string conversion warning in
+    // Drupal\webform\WebformSubmissionStorage::saveData() caused by
+    // $webform_submission->data['civicrm'] as arrays are not supported in
+    // submission data, and the array gets stored simply as the string "Array".
+    // Deleting the 'civicrm' array has risk as it's not clear if it's used
+    // later in preSave or in postSave. Safest solution to supress the warning
+    // is to mark the field as 'webform_computed_twig' so that it won't be
+    // saved, but will persist in the submission->data array for possible use
+    // later in this request. The array will not actually be evaluated as a
+    // twig template as the element has no '#template' property.
+    if (!empty($webform_submission->getData()['civicrm'])) {
+      $webform_submission->getWebform()->setElementProperties('civicrm', ['#type' => 'webform_computed_twig']);
+    }
+
     // While saving a draft, just skip to postSave and write the record
     if ($this->submission->isDraft()) {
       return;
     }
 
-    $this->fillDataFromSubmission();
     //Fill Custom Contact reference fields.
     $this->fillContactRefs(TRUE);
 
@@ -2647,26 +2675,6 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
         return empty($params['name']);
       default:
         return empty($params[$location]);
-    }
-  }
-
-  /**
-   * Clears an error against a form element.
-   * Used to disable validation when this module hides a field
-   * @see https://api.drupal.org/comment/49163#comment-49163
-   *
-   * @param $name string
-   */
-  private function unsetError($name) {
-    $errors = &drupal_static('form_set_error', []);
-    $removed_messages = [];
-    if (isset($errors[$name])) {
-      $removed_messages[] = $errors[$name];
-      unset($errors[$name]);
-    }
-    $_SESSION['messages']['error'] = array_diff($_SESSION['messages']['error'], $removed_messages);
-    if (empty($_SESSION['messages']['error'])) {
-      unset($_SESSION['messages']['error']);
     }
   }
 

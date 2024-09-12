@@ -656,7 +656,6 @@ States. State/Province - New Jersey.
     $field_disabled = $this->getSession()->evaluateScript("document.getElementById('edit-civicrm-2-contact-1-contact-first-name').disabled");
     $this->assertEquals(true, $field_disabled, 'First name is disabled');
     $this->getSession()->getPage()->pressButton('Next >');
-    return; // @TODO: Additional parts of this test will be enabled in susbequent PRs
     $this->assertPageNoErrorMessages();
 
     // Page 3 {Contacts: 0, 1, 2}: Check initial values.
@@ -664,6 +663,7 @@ States. State/Province - New Jersey.
     $this->getSession()->getPage()->pressButton('< Prev');
 
     // Page 2 {Contacts: 0, 1, 2}: Check entered contact data ($contact[1]).
+    return; // @TODO: Additional parts of this test will be enabled in susbequent PRs    
     $this->checkContactFields($contact[1]);
     $this->getSession()->getPage()->pressButton('< Prev');
 

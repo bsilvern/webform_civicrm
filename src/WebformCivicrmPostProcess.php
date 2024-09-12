@@ -112,9 +112,12 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
     // Even though this object is destroyed between page submissions, this trick allows us to persist some data - see below
     $this->ent = $form_state->get(['civicrm', 'ent']) ?: $this->ent;
 
+    $this->getExistingContactIds();
+
     $errors = $this->form_state->getErrors();
     foreach ($errors as $key => $error) {
-      $pieces = $this->utils->wf_crm_explode_key(substr($key, strrpos($key, '][') + 2));
+      $bracket_pos = strrpos($key, '][');
+      $pieces = $this->utils->wf_crm_explode_key($bracket_pos === false ? $key : substr($key, $bracket_pos + 2));
       if ($pieces) {
         [ , $c, $ent, $n, $table, $name] = $pieces;
         if ($this->isFieldHiddenByExistingContactSettings($ent, $c, $table, $n, $name)) {

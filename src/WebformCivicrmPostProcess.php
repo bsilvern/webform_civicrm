@@ -204,12 +204,13 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
     // Fill $this->id from existing contacts
     $this->getExistingContactIds();
 
+    $this->fillDataFromSubmission();
+
     // While saving a draft, just skip to postSave and write the record
     if ($this->submission->isDraft()) {
       return;
     }
 
-    $this->fillDataFromSubmission();
     //Fill Custom Contact reference fields.
     $this->fillContactRefs(TRUE);
 

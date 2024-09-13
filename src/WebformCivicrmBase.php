@@ -32,7 +32,7 @@ abstract class WebformCivicrmBase {
   protected $line_items = [];
   protected $membership_types = [];
   protected $loadedContacts = [];
-  protected $editingSubmission;
+  protected $submission_id;
 
   // No direct access - storage for variables fetched via __get
   private $_payment_processor;
@@ -75,7 +75,7 @@ abstract class WebformCivicrmBase {
         return \CRM_Utils_System::version();
 
       default:
-        throw new Exception('Unknown property');
+        throw new \Exception('Unknown property');
     }
   }
 
@@ -255,12 +255,29 @@ abstract class WebformCivicrmBase {
    * @param array $component
    *   Webform component of type 'civicrm_contact'
    */
-  protected function findContact($component) {
+  protected function findContact($component, $cid_submitted_value = null) {
     $contactComponent = \Drupal::service('webform_civicrm.contact_component');
     $component['#form_key'] = $component['#form_key'] ?? $component['#webform_key'];
 
     list(, $c,) = explode('_', $component['#form_key'], 3);
     $filters = $contactComponent->wf_crm_search_filters($this->node, $component);
+
+    // If we have a submitted value for the existing contact then no need to
+    // examine the URL params or default settings.
+    if (!is_null($cid_submitted_value)) {
+      if ($this->utils->wf_crm_is_positive($cid_submitted_value)
+        && !empty($this->enabled[$component['#form_key']])
+        && $contactComponent->wf_crm_contact_access($component, $filters, $cid_submitted_value) != FALSE) {
+        $this->ent['contact'][$c]['id'] = $cid_submitted_value;
+      }
+      else {
+        // We arrive here if an existing_contact field is blank or set to
+        // "Create New" ($cid_submitted_value starts with "-").
+        $this->ent['contact'][$c]['id'] = 0;
+      }
+      return;
+    }
+
     // Start with the url - that trumps everything.
     $element_manager = \Drupal::getContainer()->get('plugin.manager.webform.element');
     $existing_component_plugin = $element_manager->getElementInstance($component);

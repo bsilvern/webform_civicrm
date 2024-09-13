@@ -26,14 +26,14 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivicrmPreProcessInterface {
 
   private $form;
-  private $form_state;
   private $info = [];
   private $all_fields;
   private $all_sets;
 
-  /**
-   * @var \Drupal\webform_civicrm\UtilsInterface
-   */
+  /** @var \Drupal\Core\Form\FormState  */
+  private $form_state;
+
+  /** @var \Drupal\webform_civicrm\UtilsInterface */
   protected $utils;
 
   public function __construct(UtilsInterface $utils) {
@@ -59,12 +59,12 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
     $this->all_sets = $this->utils->wf_crm_get_fields('sets');
     $this->enabled = $this->utils->wf_crm_enabled_fields($handler->getWebform());
     $this->line_items = $form_state->get(['civicrm', 'line_items']) ?: [];
-    $this->editingSubmission = $webform_submission->id();
+    $this->submission_id = $webform_submission->id();
     // If editing an existing submission, load entity data
-    if ($this->editingSubmission) {
+    if ($this->submission_id) {
       $query = \Drupal::database()->select('webform_civicrm_submissions', 'wcs')
         ->fields('wcs', ['civicrm_data'])
-        ->condition('sid', $this->editingSubmission, '=');
+        ->condition('sid', $this->submission_id, '=');
       $content = $query->execute()->fetchAssoc();
       if (!empty($content['civicrm_data'])) {
         $this->ent = unserialize($content['civicrm_data']);
@@ -89,22 +89,6 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
     if (!empty($this->form_state->get('civicrm'))) {
       $this->ent = $this->form_state->get(['civicrm', 'ent']);
     }
-    $submitted_contacts = [];
-    // Keep track of cids across multipage forms
-    if (!empty($this->form_state->getValue('submitted')) && $this->form_state->get(['webform','page_count']) > 1) {
-      foreach ($this->enabled as $k => $v) {
-        // @TODO review the usage of the existing element.
-        if (substr($k, -8) == 'existing' && $this->form_state->getValue(['submitted', $v])) {
-          list(, $c) = explode('_', $k);
-          $val = $this->form_state->getValue(['submitted', $v]);
-          $cid_data["cid$c"] = $this->ent['contact'][$c]['id'] = (int) (is_array($val) ? $val[0] : $val);
-          $submitted_contacts[$c] = TRUE;
-        }
-      }
-      if (!empty($cid_data)) {
-        $this->form['#attributes']['data-civicrm-ids'] = Json::encode($cid_data);
-      }
-    }
     $this->form['#attributes']['data-form-defaults'] = Json::encode($this->getWebformDefaults());
     // Early return if the form (or page) was already submitted
     $triggering_element = $this->form_state->getTriggeringElement();
@@ -116,19 +100,29 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
       return;
     }
 
-    if ($triggering_element && $triggering_element['#id'] == 'edit-wizard-prev'
-      || (empty($this->form_state->isRebuilding()) && !empty($this->form_state->getValues()) && empty($this->form['#submission']->is_draft))
-      // When resuming from a draft
-      || (!empty($this->form_state->getFormObject()->getEntity()->isDraft()) && empty($this->form_state->getUserInput()))
-    ) {
-      $this->fillForm($this->form, $this->form_state->getValues());
-      return;
-    }
-    // If this is an edit op, use the original IDs and return
-    if (isset($this->form['#submission']->sid) && $this->form['#submission']->is_draft != '1') {
-      if (isset($this->form['#submission']->civicrm)) {
-        $this->form_state['civicrm']['ent'] = $this->form['#submission']->civicrm;
-        foreach ($this->form_state['civicrm']['ent']['contact'] as $c => $contact) {
+    $userInput = $this->form_state->getUserInput();
+    $values = $this->form_state->getValues();
+
+    // We need to fill element default values with CiviCRM data when:
+    // * Loading a virgin form.
+    // * Upon Next/Prev/SaveDraft when there might be locked/hidden fields as
+    //   those elements are not submitted.
+    // We specifically do NOT want to modify element default values on a
+    // submitted form. This includes loading a draft on the front end (where the
+    // user may have updated existing CiviCRM contact data), and when
+    // editing a draft/final submission in the back end (where we want to
+    // preserve the submitted data). A consequence of this is that when a
+    // submitted form is saved, there is a potential to overwrite CiviCRM data
+    // which might have been changed subsequent to the prior submission.
+    $populate_contact_data = !($this->submission_id && empty($values));
+
+    if (!$populate_contact_data) {
+      if ($this->submission_id) {
+        // When loading a submitted form, we restore the previously saved
+        // contact_id values to ensure that upon Submit we update
+        // existing contacts rather than create new ones.
+        $this->form_state->set(['civicrm', 'ent'], $this->ent);
+        foreach ($this->ent['contact'] ?? [] as $c => $contact) {
           $this->info['contact'][$c]['contact'][1]['existing'] = wf_crm_aval($contact, 'id', 0);
         }
       }
@@ -141,13 +135,24 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
     for ($c = 1; $c <= $counts_count; ++$c) {
       $this->ent['contact'][$c] = wf_crm_aval($this->ent, "contact:$c", []);
       $existing_component = $this->node->getElement("civicrm_{$c}_contact_1_contact_existing");
-      // Search for contact if the user hasn't already chosen one
-      if ($existing_component && empty($submitted_contacts[$c])) {
-        $this->findContact($existing_component);
+      // Ensure that a user-entered cid overrides any default created during
+      // the page load.
+      if ($existing_component) {
+        // On the first Next/Prev/SaveDraft after a virgin or draft form load,
+        // we arrive here pre-validation with no element defaults and need to
+        // set all of them. At this point we have an empty $values array, and
+        // so we need to instead use $userInput to ensure that an
+        // existing_contact value which has just been modified from its
+        // default will be honored as we set the default contact values.
+        $cid_user_input = $userInput["civicrm_{$c}_contact_1_contact_existing"] ??
+                          $values["civicrm_{$c}_contact_1_contact_existing"] ??
+                          null;
+        $this->findContact($existing_component, $cid_user_input);
       }
       // Fill cid with '0' if unknown
       $this->ent['contact'][$c] += ['id' => 0];
     }
+
     // Search for other existing entities
     if (empty($this->form_state->get('civicrm'))) {
       if (!empty($this->data['case']['number_of_case'])) {
@@ -543,77 +548,98 @@ class WebformCivicrmPreProcess extends WebformCivicrmBase implements WebformCivi
             }
             $element['#options'] = $new;
           }
-          // If the user has already entered a value for this field, don't change it
-          if (isset($this->info[$ent][$c][$table][$n][$name])
-            && !(isset($element['#form_key']) && isset($submitted[$element['#form_key']]))) {
+
+          if (isset($this->info[$ent][$c][$table][$n][$name])) {
             $val = $this->info[$ent][$c][$table][$n][$name];
-            if (($element['#type'] == 'checkboxes' || !empty($element['#multiple'])) && !is_array($val)) {
-              $val = $this->utils->wf_crm_explode_multivalue_str($val);
+            $fieldNotYetSubmitted = !(isset($element['#form_key']) && isset($submitted[$element['#form_key']]));
+
+            // If the field has been locked/hidden by an existing_contact
+            // element, we'll set the default value to the current CiviCRM
+            // value, even if we already have a submitted value for it. This is
+            // required to display the correct locked values e.g. if the user
+            // performs the sequence: Load, Next, change selected
+            // existing_contact, Next, Prev.
+            if ($ent === 'contact' && isset($this->enabled["civicrm_{$c}_contact_1_contact_existing"])) {
+              $component = $this->node->getElement("civicrm_{$c}_contact_1_contact_existing");
+              $type = ($table == 'contact' && strpos($name, 'name')) ? 'name' : $table;
+              $component += ['#hide_fields' => []];
+              // The field is hidden if the component is one of the specified
+              // fields to hide, unless prevented by the "Don't lock fields that
+              // are empty" setting.
+              $fieldIsHidden = in_array($type, $component['#hide_fields']) && !($component['#no_hide_blank'] && empty($val));
+            } else {
+              $fieldIsHidden = false;
             }
-            if ($element['#type'] != 'checkboxes' && $element['#type'] != 'date'
-              && empty($element['#multiple']) && is_array($val)) {
-              // If there's more than one value for a non-multi field, pick the most appropriate
-              if (!empty($element['#options']) && !empty(array_filter($val))) {
-                foreach ($element['#options'] as $k => $v) {
-                  if (in_array($k, $val)) {
-                    $val = $k;
-                    break;
+
+            if ($fieldIsHidden || $fieldNotYetSubmitted) {
+              if (($element['#type'] == 'checkboxes' || !empty($element['#multiple'])) && !is_array($val)) {
+                $val = $this->utils->wf_crm_explode_multivalue_str($val);
+              }
+              if ($element['#type'] != 'checkboxes' && $element['#type'] != 'date'
+                && empty($element['#multiple']) && is_array($val)) {
+                // If there's more than one value for a non-multi field, pick the most appropriate
+                if (!empty($element['#options']) && !empty(array_filter($val))) {
+                  foreach ($element['#options'] as $k => $v) {
+                    if (in_array($k, $val)) {
+                      $val = $k;
+                      break;
+                    }
+                  }
+                }
+                else {
+                  $val = array_pop($val);
+                }
+              }
+              if ($element['#type'] == 'autocomplete' && is_string($val) && strlen($val)) {
+                $options = $this->utils->wf_crm_field_options($element, '', $this->data);
+                $val = wf_crm_aval($options, $val);
+              }
+              //Ensure value from webform default is loaded when the field is null in civicrm.
+              if (!empty($element['#options']) && isset($val)) {
+                if (!is_array($val) && !isset($element['#options'][$val])) {
+                  $val = NULL;
+                }
+                if ((empty($val) || (is_array($val) && empty(array_filter($val)))) && !empty($this->form['#attributes']['data-form-defaults'])) {
+                  $formDefaults = Json::decode($this->form['#attributes']['data-form-defaults']);
+                  $key = str_replace('_', '-', $element['#form_key']);
+                  if (isset($formDefaults[$key])) {
+                    $val = $formDefaults[$key];
                   }
                 }
               }
-              else {
-                $val = array_pop($val);
-              }
-            }
-            if ($element['#type'] == 'autocomplete' && is_string($val) && strlen($val)) {
-              $options = $this->utils->wf_crm_field_options($element, '', $this->data);
-              $val = wf_crm_aval($options, $val);
-            }
-            //Ensure value from webform default is loaded when the field is null in civicrm.
-            if (!empty($element['#options']) && isset($val)) {
-              if (!is_array($val) && !isset($element['#options'][$val])) {
-                $val = NULL;
-              }
-              if ((empty($val) || (is_array($val) && empty(array_filter($val)))) && !empty($this->form['#attributes']['data-form-defaults'])) {
-                $formDefaults = Json::decode($this->form['#attributes']['data-form-defaults']);
-                $key = str_replace('_', '-', $element['#form_key']);
-                if (isset($formDefaults[$key])) {
-                  $val = $formDefaults[$key];
-                }
-              }
-            }
-            // Contact image & custom file fields
-            if ($dt == 'File') {
-              $fileInfo = $this->getFileInfo($name, $val, $ent, $n);
+              // Contact image & custom file fields
+              if ($dt == 'File') {
+                $fileInfo = $this->getFileInfo($name, $val, $ent, $n);
 
-              if ($fileInfo && in_array($element['#type'], ['file', 'managed_file'])) {
-                $this->form['#attached']['drupalSettings']['webform_civicrm']['fileFields'][] = [
-                  'eid' => $eid,
-                  'fileInfo' => $fileInfo
-                ];
-                // Unset required attribute on the file if its loaded from civicrm.
-                if (!empty($val)) {
-                  $element['#required'] = FALSE;
-                  unset($element['#states']['required']);
+                if ($fileInfo && in_array($element['#type'], ['file', 'managed_file'])) {
+                  $this->form['#attached']['drupalSettings']['webform_civicrm']['fileFields'][] = [
+                    'eid' => $eid,
+                    'fileInfo' => $fileInfo
+                  ];
+                  // Unset required attribute on the file if its loaded from civicrm.
+                  if (!empty($val)) {
+                    $element['#required'] = FALSE;
+                    unset($element['#states']['required']);
+                  }
                 }
               }
-            }
-            // Set value for "secure value" elements
-            elseif ($element['#type'] == 'value') {
-              $element['#value'] = $val;
-            }
-            elseif ($element['#type'] == 'datetime' || $element['#type'] == 'datelist') {
-              if (!empty($val)) {
-                $element['#default_value'] = DrupalDateTime::createFromTimestamp(strtotime($val));
+              // Set value for "secure value" elements
+              elseif ($element['#type'] == 'value') {
+                $element['#value'] = $val;
               }
-            }
-            elseif ($element['#type'] == 'date') {
-              // Must pass date only
-              $element['#default_value'] = substr($val, 0, 10);
-            }
-            // Set default value
-            else {
-              $element['#default_value'] = $val;
+              elseif ($element['#type'] == 'datetime' || $element['#type'] == 'datelist') {
+                if (!empty($val)) {
+                  $element['#default_value'] = DrupalDateTime::createFromTimestamp(strtotime($val));
+                }
+              }
+              elseif ($element['#type'] == 'date') {
+                // Must pass date only
+                $element['#default_value'] = substr($val, 0, 10);
+              }
+              // Set default value
+              else {
+                $element['#default_value'] = $val;
+              }
             }
           }
           if (in_array($name, ['state_province_id', 'county_id', 'billing_address_state_province_id', 'billing_address_county_id'])) {

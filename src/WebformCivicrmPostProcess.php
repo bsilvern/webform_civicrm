@@ -206,6 +206,21 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
 
     $this->fillDataFromSubmission();
 
+    // If we've loaded a draft, then performing a subsequent Submit or Save
+    // Draft throws an array-to-string conversion warning in
+    // Drupal\webform\WebformSubmissionStorage::saveData() caused by
+    // $webform_submission->data['civicrm'] as arrays are not supported in
+    // submission data, and the array gets stored simply as the string "Array".
+    // Deleting the 'civicrm' array has risk as it's not clear if it's used
+    // later in preSave or in postSave. Safest solution to supress the warning
+    // is to mark the field as 'webform_computed_twig' so that it won't be
+    // saved, but will persist in the submission->data array for possible use
+    // later in this request. The array will not actually be evaluated as a
+    // twig template as the element has no '#template' property.
+    if (!empty($webform_submission->getData()['civicrm'])) {
+      $webform_submission->getWebform()->setElementProperties('civicrm', ['#type' => 'webform_computed_twig']);
+    }
+
     // While saving a draft, just skip to postSave and write the record
     if ($this->submission->isDraft()) {
       return;

@@ -834,7 +834,6 @@ States. State/Province - New Jersey.
     // Page 2 {Contacts: 3, 4, 2}: Reload form, check still has $contact[4]
     $this->drupalGet($this->webform->toUrl('canonical'));
     $this->assertSession()->pageTextContains('A partially-completed form was found. Please complete the remaining portions.');
-    return; // @TODO: Additional parts of this test will be enabled in subsequent PRs
     $this->checkContactFields($contact[4]);
     $this->getSession()->getPage()->pressButton('Next >');
 
@@ -975,6 +974,7 @@ States. State/Province - New Jersey.
     $this->htmlOutput();
 
     // Page 3 {Contacts: 8m, 5, 9m}: Confirm submit OK
+    return; // @TODO: Additional parts of this test will be enabled in subsequent PRs
     $this->assertPageNoErrorMessages();
     $this->assertSession()->pageTextContains('New submission added to CiviCRM Webform Test.');
 

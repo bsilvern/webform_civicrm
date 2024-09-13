@@ -121,15 +121,24 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
       if ($pieces) {
         [ , $c, $ent, $n, $table, $name] = $pieces;
         if ($this->isFieldHiddenByExistingContactSettings($ent, $c, $table, $n, $name)) {
-          $this->unsetError($key);
+          $errors_to_clear[$key] = 1;
         }
         elseif ($table === 'address' && !empty($this->crmValues["civicrm_{$c}_contact_{$n}_address_master_id"])) {
           $master_id = $this->crmValues["civicrm_{$c}_contact_{$n}_address_master_id"];
           // If widget is checkboxes, need to filter the array
           if (!is_array($master_id) || array_filter($master_id)) {
-            $this->unsetError($key);
+            $errors_to_clear[$key] = 1;
           }
         }
+      }
+    }
+
+    // Clear the unwanted errors
+    if (!empty($errors_to_clear)) {
+      $this->form_state->clearErrors();
+      $errors = array_diff_key($errors, $errors_to_clear);
+      foreach ($errors as $name => $error_message) {
+        $this->form_state->setErrorByName($name, $error_message);
       }
     }
 
@@ -2650,26 +2659,6 @@ class WebformCivicrmPostProcess extends WebformCivicrmBase implements WebformCiv
         return empty($params['name']);
       default:
         return empty($params[$location]);
-    }
-  }
-
-  /**
-   * Clears an error against a form element.
-   * Used to disable validation when this module hides a field
-   * @see https://api.drupal.org/comment/49163#comment-49163
-   *
-   * @param $name string
-   */
-  private function unsetError($name) {
-    $errors = &drupal_static('form_set_error', []);
-    $removed_messages = [];
-    if (isset($errors[$name])) {
-      $removed_messages[] = $errors[$name];
-      unset($errors[$name]);
-    }
-    $_SESSION['messages']['error'] = array_diff($_SESSION['messages']['error'], $removed_messages);
-    if (empty($_SESSION['messages']['error'])) {
-      unset($_SESSION['messages']['error']);
     }
   }
 

@@ -86,7 +86,7 @@ class Fields implements FieldsInterface {
         }
       }
       $conditional_sets = [
-        'CiviCase' => ['entity_type' => 'case', 'label' => t('Case'), 'max_instances' => 30],
+        'CiviCase' => ['entity_type' => 'case', 'label' => t('Case'), 'max_instances' => 50],
         'CiviEvent' => ['entity_type' => 'participant', 'label' => t('Participant'), 'max_instances' => 9],
         'CiviContribute' => ['entity_type' => 'contribution', 'label' => t('Contribution')],
         'CiviMember' => ['entity_type' => 'membership', 'label' => t('Membership'), 'custom_fields' => 'combined'],

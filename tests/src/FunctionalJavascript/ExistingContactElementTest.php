@@ -428,10 +428,9 @@ States. State/Province - New Jersey.
    *    contains parameter arrays for each test-contact
    */
   private function addcontactinfo2() {
-    $currentUserUF = $this->getUFMatchRecord($this->rootUser->id());
     $contact = [
-      0 => [ // cid = 3
-        'contact_id' => $currentUserUF['contact_id'],
+      0 => [ // cid = 3 (will overwrite existing contact)
+        'contact_id' => 3,
         'first_name' => 'Jimmy',
         'last_name' => 'Page',
         'job_title' => "Guitarist",
@@ -604,6 +603,7 @@ States. State/Province - New Jersey.
     $this->getSession()->getPage()->checkField("webform_ui_elements[civicrm_2_contact_1_contact_last_name][required]");
     $this->getSession()->getPage()->checkField("webform_ui_elements[civicrm_3_contact_1_contact_last_name][required]");
     $this->getSession()->getPage()->pressButton('Save elements');
+    $this->assertSession()->assertWaitOnAjaxRequest();
 
     $this->drupalGet($this->webform->toUrl('edit-form'));
     $this->htmlOutput();
@@ -946,7 +946,6 @@ States. State/Province - New Jersey.
 
     // Page 2 {Contacts: 8m, none, 2}: Check $contact[7] (null contact)
     $this->checkContactFields($contact[7]);
-    //$this->getSession()->getPage()->pressButton('< Prev');
 
     // Page 2 {Contacts: 8m, none, 2}: Select $contact[5]
     $this->getSession()->getPage()->selectFieldOption('civicrm_2_contact_1_contact_existing', "{$contact[5]['first_name']} {$contact[5]['last_name']}");

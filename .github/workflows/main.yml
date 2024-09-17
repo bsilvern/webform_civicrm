@@ -187,7 +187,7 @@ jobs:
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
           cd ~/drupal/web
-#         ../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
+          #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
           ../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/ExistingContactElementTest.php 
         env:
           SYMFONY_DEPRECATIONS_HELPER: 999999

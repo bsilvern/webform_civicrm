@@ -472,13 +472,16 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    */
   protected function setDefaultValue($selector, $value) {
     $this->assertSession()->elementExists('css', "[data-drupal-selector='{$selector}'] a.webform-ajax-link")->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
     $this->assertSession()->waitForElementVisible('xpath', '//a[contains(@id, "--advanced")]');
     $this->assertSession()->elementExists('xpath', '//a[contains(@id, "--advanced")]')->click();
     $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-default"]')->click();
     $this->getSession()->getPage()->fillField('properties[default_value]', $value);
+    // The following Save generates two Ajax resquests
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
+    sleep(5); // Ensure that we've waited for the second Ajax request to complete
     $this->assertSession()->pageTextContains(' has been updated');
   }
 
@@ -505,6 +508,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
 
     $contactElementEdit = $this->assertSession()->elementExists('css', "[data-drupal-selector=\"{$params['selector']}\"] a.webform-ajax-link");
     $contactElementEdit->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
 
     $this->assertSession()->waitForElementVisible('css', "button.webform-details-toggle-state");
@@ -544,7 +548,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     }
     else {
       $this->getSession()->getPage()->selectFieldOption('Form Widget', $params['widget']);
-      $this->assertSession()->assertWaitOnAjaxRequest();
+      //$this->assertSession()->assertWaitOnAjaxRequest();
       if ($params['widget'] == 'Autocomplete') {
         $this->assertSession()->waitForElementVisible('css', '[data-drupal-selector="edit-properties-search-prompt"]');
         $this->getSession()->getPage()->fillField('Search Prompt', '- Select Contact -');
@@ -566,7 +570,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
 
       if ($params['default'] == 'relationship') {
         $this->getSession()->getPage()->selectFieldOption('properties[default_relationship_to]', $params['default_relationship']['default_relationship_to']);
-        $this->assertSession()->assertWaitOnAjaxRequest();
+        //$this->assertSession()->assertWaitOnAjaxRequest();
         $this->getSession()->getPage()->selectFieldOption('properties[default_relationship][]', $params['default_relationship']['default_relationship']);
       }
     }
@@ -600,8 +604,10 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       $ajax_message_visible = $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages', 100);
     } while ($ajax_message_visible);
 
+    // Note: The following Save button press generates two Ajax calls
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
+    sleep(5); // Just in case we're failing to wait for the second Ajax call
 
     $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages');
   }

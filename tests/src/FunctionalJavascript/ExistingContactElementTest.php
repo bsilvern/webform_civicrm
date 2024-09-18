@@ -614,7 +614,7 @@ States. State/Province - New Jersey.
     // issue persists in that version. Perhaps some other change in 10.3.4 is the issue.
     // Ref: https://www.drupal.org/project/drupal/releases/10.3.4 
     //      https://www.drupal.org/project/drupal/releases/10.3.5
-    //drupal_flush_all_caches();
+    drupal_flush_all_caches();
 
     // Place fields for each contact on their own page and enable saving drafts
     $webform =  Webform::load($this->webform->getOriginalId());

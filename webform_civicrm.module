@@ -941,7 +941,7 @@ function webform_civicrm_civicrm_pre($op, $objectName, $id, &$params) {
  */
 function webform_civicrm_js_settings_alter(&$settings) {
   // @TODO: Remove this function when it is no longer required.
-  if (version_compare(\Drupal::VERSION, '10.3.0', '>=') && version_compare(\Drupal::VERSION, '11.0.0', '<')) {
-    $settings['suppressDeprecationErrors'] = TRUE;
-  }
+  //if (version_compare(\Drupal::VERSION, '10.3.0', '>=') && version_compare(\Drupal::VERSION, '11.0.0', '<')) {
+  $settings['suppressDeprecationErrors'] = TRUE;
+  //}
 }

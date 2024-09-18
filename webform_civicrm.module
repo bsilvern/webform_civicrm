@@ -946,10 +946,9 @@ function webform_civicrm_js_settings_alter(&$settings) {
   // Suppress browser console deprecation warnings. This is the default when not
   // running unit tests, but just in case, we'll change the setting only when we
   // are running a unit test in an affected Drupal version.
-  if (!empty(getenv('SIMPLETEST_BASE_URL')) &&
+  if (!empty($_COOKIE["SIMPLETEST_USER_AGENT"]) &&
     version_compare(\Drupal::VERSION, '9.2.0', '>=') &&
     version_compare(\Drupal::VERSION, '11.0.0', '<')) {
       $settings['suppressDeprecationErrors'] = TRUE;
   }
-  dump($settings['suppressDeprecationErrors']);
 }

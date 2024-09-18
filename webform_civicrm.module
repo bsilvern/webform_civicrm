@@ -928,20 +928,27 @@ function webform_civicrm_civicrm_pre($op, $objectName, $id, &$params) {
 /**
  * Implements hook_js_settings_alter()
  * 
- * While running unit tests with Drupal 10.3.0+, this is required to prevent the
+ * While running unit tests with Drupal 9.2.0+, this is required to prevent the
  * browser from being flooded with "The :tabbable selector is deprecated" notices 
- * which prevent Ajax calls and other operations from being completed before timing
- * out. It has no effect while not running unit tests as deprecation notices are 
- * suppressed by default and are only enabled while running unit tests.
+ * which can prevent Ajax calls and other operations from being completed before
+ * timing out. 
  * 
  * This issue is not limited to webform_civicrm and occurs also in non-civi webforms.
+ * It is expected that this issue will be corrected in the webform module when it
+ * is updated to support Drupal 11.
  * 
  * Ref: https://www.drupal.org/node/3441616
  *      https://www.drupal.org/about/core/policies/core-change-policies/how-to-deprecate#javascript
  */
 function webform_civicrm_js_settings_alter(&$settings) {
   // @TODO: Remove this function when it is no longer required.
-  //if (version_compare(\Drupal::VERSION, '10.3.0', '>=') && version_compare(\Drupal::VERSION, '11.0.0', '<')) {
-  $settings['suppressDeprecationErrors'] = TRUE;
-  //}
+
+  // Suppress browser console deprecation warnings. This is the default when not
+  // running unit tests, but just in case, we'll do this only when we are running
+  // a unit test in the affected Drupal versions.
+  if (!empty(getenv('SIMPLETEST_BASE_URL')) &&
+    version_compare(\Drupal::VERSION, '9.2.0', '>=') && 
+    version_compare(\Drupal::VERSION, '11.0.0', '<')) {
+      $settings['suppressDeprecationErrors'] = FALSE;
+  }
 }

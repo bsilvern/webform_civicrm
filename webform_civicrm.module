@@ -924,3 +924,21 @@ function webform_civicrm_civicrm_pre($op, $objectName, $id, &$params) {
     }
   }
 }
+
+/**
+ * Implements hook_js_settings_alter()
+ * 
+ * While running unit tests with Drupal 10.3.0+, this is required to prevent the
+ * browser from being flooded with "The :tabbable selector is deprecated" notices 
+ * which prevent Ajax calls and other operations from being completed before timing
+ * out. It has no effect while not running unit tests as deprecation notices are 
+ * suppressed by default and are only enabled while running unit tests.
+ * 
+ * @TODO: Remove this hook when it is no longer required.
+ * 
+ * Ref: https://www.drupal.org/node/3441616
+ *      https://www.drupal.org/about/core/policies/core-change-policies/how-to-deprecate#javascript
+ */
+function webform_civicrm_js_settings_alter(&$settings) {
+  $settings['suppressDeprecationErrors'] = TRUE;
+}

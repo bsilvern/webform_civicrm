@@ -481,8 +481,8 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     // The following Save generates two Ajax resquests
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
-    sleep(5); // Ensure that we've waited for the second Ajax request to complete
     $this->assertSession()->pageTextContains(' has been updated');
+    sleep(5); // Ensure that we've waited for the second Ajax request to complete
   }
 
   /**
@@ -607,9 +607,8 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     // Note: The following Save button press generates two Ajax calls
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
-    sleep(5); // Just in case we're failing to wait for the second Ajax call
-
     $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages');
+    sleep(5); // Just in case we failing to wait for the second Ajax call
   }
 
   /**

@@ -32,7 +32,7 @@ jobs:
           # - drupal: '10.2.*'
           #   civicrm: '5.77.x-dev'
           #   php: '8.2'
-          - drupal: '10.3.*'
+          - drupal: '10.3.4'
             civicrm: 'dev-master'
             php: '8.3'
     name: Drupal ${{ matrix.drupal }} | CiviCRM ${{ matrix.civicrm }}

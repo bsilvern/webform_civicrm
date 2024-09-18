@@ -608,10 +608,17 @@ States. State/Province - New Jersey.
     $this->drupalGet($this->webform->toUrl('edit-form'));
     $this->htmlOutput();
 
+    // Due to a change in the Drupal cache logic starting with Drupal 10.3.4 (or .5?),
+    // Webform::load returns a webform entity with no elements. We therefore clear the
+    // cache as a  workaround. The changes in 10.3.4 was reverted in 10.3.5, but this
+    // issue persists in that version. Perhaps some other change in 10.3.4 is the issue.
+    // Ref: https://www.drupal.org/project/drupal/releases/10.3.4 
+    //      https://www.drupal.org/project/drupal/releases/10.3.5
+    //drupal_flush_all_caches();
+
     // Place fields for each contact on their own page and enable saving drafts
     $webform =  Webform::load($this->webform->getOriginalId());
     $elements = Yaml::decode($webform->get('elements'));
-    dump($elements);
     $elements_new = [
       'page1' => ['#type' => 'webform_wizard_page', '#title' => 'Page 1', 'civicrm_1_contact_1_fieldset_fieldset' => $elements["civicrm_1_contact_1_fieldset_fieldset"]],
       'page2' => ['#type' => 'webform_wizard_page', '#title' => 'Page 2', 'civicrm_2_contact_1_fieldset_fieldset' => $elements["civicrm_2_contact_1_fieldset_fieldset"]],

@@ -6,7 +6,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\webform\Entity\Webform;
-use Drupal\Core\Serialization\Yaml;
+use Drupal\Component\Serialization\Yaml;
 
 /**
  * Tests submitting a Webform with CiviCRM: existing contact element.

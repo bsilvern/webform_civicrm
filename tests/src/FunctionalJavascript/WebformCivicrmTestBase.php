@@ -478,11 +478,16 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     $this->assertSession()->elementExists('xpath', '//a[contains(@id, "--advanced")]')->click();
     $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-default"]')->click();
     $this->getSession()->getPage()->fillField('properties[default_value]', $value);
-    // The following Save generates two Ajax resquests
+
+    // Note: The following click of the Save button generates two Ajax calls
+    // which would generally present a problem for assertWaitOnAjaxRequest() as
+    // that function might return after the first Ajax call is completed.
+    // Fortunately, the "Existing contact has been updated" is displayed after
+    // the second Ajax call completes, so by waiting for that message we ensure
+    // that both Ajax calls have been completed.
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->pageTextContains(' has been updated');
-    sleep(5); // Ensure that we've waited for the second Ajax request to complete
   }
 
   /**
@@ -604,11 +609,15 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       $ajax_message_visible = $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages', 100);
     } while ($ajax_message_visible);
 
-    // Note: The following Save button press generates two Ajax calls
+    // Note: The following click of the Save button generates two Ajax calls
+    // which would generally present a problem for assertWaitOnAjaxRequest() as
+    // that function might return after the first Ajax call is completed.
+    // Fortunately, the "Existing contact has been updated" is displayed after
+    // the second Ajax call completes, so by waiting for that message we ensure
+    // that both Ajax calls have been completed.
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages');
-    sleep(5); // Just in case we failing to wait for the second Ajax call
   }
 
   /**

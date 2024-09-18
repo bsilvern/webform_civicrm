@@ -934,11 +934,14 @@ function webform_civicrm_civicrm_pre($op, $objectName, $id, &$params) {
  * out. It has no effect while not running unit tests as deprecation notices are 
  * suppressed by default and are only enabled while running unit tests.
  * 
- * @TODO: Remove this hook when it is no longer required.
+ * This issue is not limited to webform_civicrm and occurs also in non-civi webforms.
  * 
  * Ref: https://www.drupal.org/node/3441616
  *      https://www.drupal.org/about/core/policies/core-change-policies/how-to-deprecate#javascript
  */
 function webform_civicrm_js_settings_alter(&$settings) {
-  $settings['suppressDeprecationErrors'] = TRUE;
+  // @TODO: Remove this function when it is no longer required.
+  if (version_compare(\Drupal::VERSION, '10.3.0', '>=') && version_compare(\Drupal::VERSION, '11.0.0', '<')) {
+    $settings['suppressDeprecationErrors'] = TRUE;
+  }
 }

@@ -437,8 +437,11 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    * Enables CiviCRM on the webform.
    */
   public function enableCivicrmOnWebform() {
-    $this->assertSession()->waitForText('Enable CiviCRM Processing');
-    $this->assertSession()->waitForField('nid');
+    $wait1 = $this->assertSession()->waitForText('Enable CiviCRM Processing');
+    $wait2 = $this->assertSession()->waitForField('nid');
+    $this->assertSession()->assert($wait1, '$wait1'); //TEMP   
+    $this->assertSession()->assert(!empty($wait2), '$wait2'); //TEMP   
+    $this->assertSession()->assert(!$this->htmlOutputEnabled == FALSE, "htmlOutputEnabled is TRUE"); //TEMP   
     $this->htmlOutput();
     $this->getSession()->getPage()->checkField('nid');
     $this->getSession()->getPage()->selectFieldOption('1_contact_type', 'individual');

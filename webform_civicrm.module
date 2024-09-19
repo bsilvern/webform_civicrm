@@ -951,5 +951,7 @@ function webform_civicrm_js_settings_alter(&$settings) {
     version_compare(\Drupal::VERSION, '11.0.0', '<')) {
       $settings['suppressDeprecationErrors'] = TRUE;
   }
-  //$settings['suppressDeprecationErrors'] = TRUE; //TEMP
+  if (!$settings['suppressDeprecationErrors']) {
+    die("suppressDeprecationErrors is FALSE!");
+  }
 }

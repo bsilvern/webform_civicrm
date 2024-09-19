@@ -205,7 +205,7 @@ final class MembershipSubmissionTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('edit-form'));
-    $this->assertSession()->waitForField('CiviCRM Options');
+    //$this->assertSession()->waitForField('CiviCRM Options');
 
     // Add the Default -> [current-page:query:membership]
     $membershipElementEdit = $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-webform-ui-elements-civicrm-1-membership-1-membership-membership-type-id-operations"] a.webform-ajax-link');
@@ -217,12 +217,21 @@ final class MembershipSubmissionTest extends WebformCivicrmTestBase {
     $this->htmlOutput();
 
     $this->getSession()->getPage()->clickLink('Advanced');
-    $this->assertSession()->assertWaitOnAjaxRequest();
+    //$this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
     $fieldset = $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-default"]');
     $fieldset->click();
     $this->getSession()->getPage()->fillField('Default value', '[current-page:query:membership]');
+
+    // Note: The following click of the Save button generates two Ajax calls
+    // which would generally present a problem for assertWaitOnAjaxRequest() as
+    // that function might return after the first Ajax call is completed.
+    // Fortunately, the "Membership type has been updated" is displayed after
+    // the second Ajax call completes, so by waiting for that message we ensure
+    // that both Ajax calls have been completed.
     $this->getSession()->getPage()->pressButton('Save');
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->assertSession()->pageTextContains(' has been updated');
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical', ['query' => ['membership' => 2]]));

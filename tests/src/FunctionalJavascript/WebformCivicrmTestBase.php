@@ -355,7 +355,8 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
   protected function editCivicrmOptionElement($selector, $multiple = TRUE, $enableStatic = FALSE, $default = NULL, $type = NULL, $singleOption = FALSE, $asList = FALSE) {
     $checkbox_edit_button = $this->assertSession()->elementExists('css', '[data-drupal-selector="' . $selector . '"] a.webform-ajax-link');
     $checkbox_edit_button->click();
-    $this->assertSession()->waitForField('drupal-off-canvas');
+    //$this->assertSession()->waitForField('drupal-off-canvas');
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
     if ($type) {
       $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-change-type"]')->click();
@@ -449,8 +450,17 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    * @param boolean $fieldDeleted
    */
   public function saveCiviCRMSettings($fieldDeleted = FALSE) {
+    // if (!$fieldDeleted) {
+    //   // Ensure that we haven't created a test sequence where this string exists on the page prior to clicking the Save Settings button and then waiting for this string.
+    //   $this->assertSession()->pageTextNotContains('Saved CiviCRM settings');
+    // }      
     $this->getSession()->getPage()->pressButton('Save Settings');
+
+    // Wait for the page to load (this is not an Ajax request)
+    $this->getSession()->getPage()->getText();
+
     if (!$fieldDeleted) {
+      //$this->assertSession()->waitForElementVisible('css', '.messages-list__item.messages.messages--status');
       $this->assertSession()->pageTextContains('Saved CiviCRM settings');
     }
     $this->assertPageNoErrorMessages();

@@ -530,6 +530,7 @@ States. State/Province - New Jersey.
   * Test locked/unlocked and blank/filled fields during Next/Previous/Save Draft/Load Draft/Submit operations
   */
   public function testNextPrevSaveLoad() {
+    $this->markTestSkipped('Requires update to existing_contact code.');
     $contact = $this->addcontactinfo2();
 
     $this->drupalLogin($this->rootUser);

@@ -1,0 +1,25 @@
+0000000000000000000000000000000000000000 5b5a2bf830d493e3755631decf4194893bf7aef2 Bob Silvern <bsilvern@users.noreply.github.com> 1726585692 -0700	branch: Created from HEAD
+5b5a2bf830d493e3755631decf4194893bf7aef2 ac2ef689b1058a6d438f23e28e07c493ce7235df Bob Silvern <bsilvern@users.noreply.github.com> 1726585899 -0700	commit: Move assertWaitOnAjaxRequest
+ac2ef689b1058a6d438f23e28e07c493ce7235df 19d6ff432f99597a264d4c01c15712385d3003c0 Bob Silvern <bsilvern@users.noreply.github.com> 1726607245 -0700	commit: Add Ajax waits, delays.
+19d6ff432f99597a264d4c01c15712385d3003c0 5882f5595f68835b538b3ffab3145f41177d8d63 Bob Silvern <bsilvern@users.noreply.github.com> 1726607944 -0700	commit: fix main.yaml bug
+5882f5595f68835b538b3ffab3145f41177d8d63 4ee13b06fb3b48c87b531853f342b3177e68750d Bob Silvern <bsilvern@users.noreply.github.com> 1726620244 -0700	commit: Supress browser deprecation notices
+4ee13b06fb3b48c87b531853f342b3177e68750d ce77582ee9dd41b5ad869265c4c8c2279f37e776 Bob Silvern <bsilvern@users.noreply.github.com> 1726621113 -0700	commit: test in conditions 1, 2, 3
+ce77582ee9dd41b5ad869265c4c8c2279f37e776 9d189e666ef869d0ce62a3ca43c5fc979863da87 Bob Silvern <bsilvern@users.noreply.github.com> 1726627815 -0700	commit: Remove uneeded delays, cleanup.
+9d189e666ef869d0ce62a3ca43c5fc979863da87 f7682fed5c2bbe82f1aa5a078807c77a4c14a784 Bob Silvern <bsilvern@users.noreply.github.com> 1726628616 -0700	commit: run full 10.3 test
+f7682fed5c2bbe82f1aa5a078807c77a4c14a784 562ac599729fed361cd95d137e60dfb4732aa6b3 Bob Silvern <bsilvern@users.noreply.github.com> 1726629303 -0700	commit: Short test with changed uses to Drupal\Component\Serialization\Yaml
+562ac599729fed361cd95d137e60dfb4732aa6b3 6915f8a4446c304fd9b238b19938d5d4b716c5d8 Bob Silvern <bsilvern@users.noreply.github.com> 1726639589 -0700	commit: dump($elements)
+6915f8a4446c304fd9b238b19938d5d4b716c5d8 64c24663457b28517f5b866b16b272a7864c5da2 Bob Silvern <bsilvern@users.noreply.github.com> 1726646908 -0700	commit: Try Drupal 10.3.4
+64c24663457b28517f5b866b16b272a7864c5da2 53d3354cc39271fd6cf5f5d0f1b53b42e308ef01 Bob Silvern <bsilvern@users.noreply.github.com> 1726647039 -0700	commit: Run the whole enchilata.
+53d3354cc39271fd6cf5f5d0f1b53b42e308ef01 6bfefe872f50d81d3be01e1b2e0b74eabd03ced2 Bob Silvern <bsilvern@users.noreply.github.com> 1726671429 -0700	commit: suppressDeprecationErrors in all versions
+6bfefe872f50d81d3be01e1b2e0b74eabd03ced2 6515b96df7809acc7a713028edeec4ba337cbe70 Bob Silvern <bsilvern@users.noreply.github.com> 1726679747 -0700	commit: Cleanup deprication warning suppression code.
+6515b96df7809acc7a713028edeec4ba337cbe70 eadb7692987c026bfe4582f54ac4a94f196dcd3f Bob Silvern <bsilvern@users.noreply.github.com> 1726735355 -0700	commit: Fix misc test failures
+eadb7692987c026bfe4582f54ac4a94f196dcd3f 510757dc99f14cc89337d0b87478e7dc7ad3b095 Webform CiviCRM <webform.civicrm@example.org> 1726775862 -0700	commit: Misc race condition fixes.
+510757dc99f14cc89337d0b87478e7dc7ad3b095 8525454c320666c1b4194b08627a5711bb202703 Webform CiviCRM <webform.civicrm@example.org> 1726783722 -0700	commit: add diagnostics
+8525454c320666c1b4194b08627a5711bb202703 ff0389ec408b99be258e8f49c20f0601934bc346 Webform CiviCRM <webform.civicrm@example.org> 1726795050 -0700	commit: Try mariadb:11.4, config-4
+ff0389ec408b99be258e8f49c20f0601934bc346 6dd07f579ae3d95eeb1b75bbf8f06b3c944cf2e4 Webform CiviCRM <webform.civicrm@example.org> 1726795597 -0700	commit: Fix mariadb in workflow yaml
+6dd07f579ae3d95eeb1b75bbf8f06b3c944cf2e4 236915e98ea5f7aac16940e68f1c05c1c5a669a3 Bob Silvern <11998546+bsilvern@users.noreply.github.com> 1726809533 -0700	commit: Install last 2 civi extensions.
+236915e98ea5f7aac16940e68f1c05c1c5a669a3 9ed754330426f659ba4e9eec827d43ace000659a Bob Silvern <11998546+bsilvern@users.noreply.github.com> 1726812674 -0700	commit: Run all 4 conditions with Mariadb
+9ed754330426f659ba4e9eec827d43ace000659a 1dfc66688cd2ee89c18539bda867b13ef4e9122c Bob Silvern <11998546+bsilvern@users.noreply.github.com> 1726816029 -0700	commit: myslq health checks double period
+1dfc66688cd2ee89c18539bda867b13ef4e9122c 24837a529d736cae71ca08cd02d4debfd1356d1a Bob Silvern <11998546+bsilvern@users.noreply.github.com> 1726817440 -0700	commit: fixed workflow error
+24837a529d736cae71ca08cd02d4debfd1356d1a aaa58224dbe93a831b76fe0006e008199cce89d2 Bob Silvern <11998546+bsilvern@users.noreply.github.com> 1726818130 -0700	commit: Enabled all conditions.
+aaa58224dbe93a831b76fe0006e008199cce89d2 e3a38c2fa40648df5897abb3dcdf2359fbfdc21d Bob Silvern <11998546+bsilvern@users.noreply.github.com> 1726860941 -0700	pull --tags upstream 6.x (finish): refs/heads/ajax_test onto 7cb605126405805b96c003d156c2e70dcf2b63b1

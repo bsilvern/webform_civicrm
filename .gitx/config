@@ -1,0 +1,84 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "upstream"]
+	url = https://github.com/colemanw/webform_civicrm.git
+	fetch = +refs/heads/*:refs/remotes/upstream/*
+[remote "origin"]
+	url = https://github.com/bsilvern/webform_civicrm.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "existing_contact_4"]
+	remote = origin
+	merge = refs/heads/existing_contact_4
+[branch "existing_contact_2"]
+	remote = origin
+	merge = refs/heads/existing_contact_2
+[branch "6.x"]
+	remote = upstream
+	merge = refs/heads/6.x
+[branch "existing_contact_5"]
+	vscode-merge-base = upstream/6.x
+	remote = origin
+	merge = refs/heads/existing_contact_5
+[branch "existing_contact_6"]
+	vscode-merge-base = origin/existing_contact_5
+	remote = origin
+	merge = refs/heads/existing_contact_6
+[branch "existing_contact_7"]
+	vscode-merge-base = origin/existing_contact_6
+[branch "existing_contact_6a"]
+	vscode-merge-base = origin/existing_contact_6
+[branch "existing_contact_8"]
+	vscode-merge-base = upstream/6.x
+[branch "existing_contact_10.1_fail"]
+	vscode-merge-base = upstream/6.x
+	gk-merge-base = upstream/6.x
+	remote = origin
+	merge = refs/heads/existing_contact_10.1_fail
+[branch "existing_contact_10.1a_pass"]
+	vscode-merge-base = origin/existing_contact_10.1_fail
+	gk-merge-base = origin/existing_contact_10.1_fail
+[branch "existing_contact_10.2_fail_2"]
+	remote = origin
+	merge = refs/heads/existing_contact_10.2_fail_2
+[branch "existing_contact_10.2_pass"]
+	vscode-merge-base = origin/existing_contact_10.2_fail_2
+	remote = origin
+	merge = refs/heads/existing_contact_10.2_pass
+[branch "existing_contact_10.3_fail"]
+	vscode-merge-base = origin/existing_contact_10.2_fail_2
+	remote = origin
+	merge = refs/heads/existing_contact_10.3_fail
+[branch "existing_contact_10.3_pass"]
+	vscode-merge-base = origin/existing_contact_10.3_fail
+[branch "existing_contact_10.1_pass"]
+	remote = origin
+	merge = refs/heads/existing_contact_10.1_pass
+[branch "ajax_test"]
+	vscode-merge-base = origin/existing_contact_10.1_pass
+	remote = origin
+	merge = refs/heads/ajax_test
+	gk-merge-base = origin/existing_contact_10.1_pass
+[branch "suppress_browser_deprecation_warnings"]
+	vscode-merge-base = upstream/6.x
+	remote = origin
+	merge = refs/heads/suppress_browser_deprecation_warnings
+	gk-merge-base = upstream/6.x
+[pull]
+	rebase = true
+[branch "suppress_browser_deprecation_warnings_1"]
+	vscode-merge-base = origin/suppress_browser_deprecation_warnings
+	remote = origin
+	merge = refs/heads/suppress_browser_deprecation_warnings_1
+	gk-merge-base = origin/suppress_browser_deprecation_warnings
+[branch "suppress_browser_deprecation_warnings_2"]
+	vscode-merge-base = origin/suppress_browser_deprecation_warnings_1
+	remote = origin
+	merge = refs/heads/suppress_browser_deprecation_warnings_2
+[branch "suppress_browser_deprecation_warnings_3"]
+	vscode-merge-base = origin/suppress_browser_deprecation_warnings_2
+	remote = origin
+	merge = refs/heads/suppress_browser_deprecation_warnings_3
+	gk-merge-base = origin/suppress_browser_deprecation_warnings_2

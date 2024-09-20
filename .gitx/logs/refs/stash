@@ -1,0 +1,14 @@
+0000000000000000000000000000000000000000 052d1861eb32268cb0255590cefe1e81b231db90 Webform CiviCRM <webform.civicrm@example.org> 1724810867 -0700	On existing_contact_7: Pre-test
+052d1861eb32268cb0255590cefe1e81b231db90 24195c2566f4f5c22ffff259c1307ca9f283d17d Webform CiviCRM <webform.civicrm@example.org> 1724867857 -0700	On existing_contact_7: 240828
+24195c2566f4f5c22ffff259c1307ca9f283d17d 695315c6da740858d44f222f72488bf836e16add Webform CiviCRM <webform.civicrm@example.org> 1725260711 -0700	On existing_contact_7: Locked fields not getting disabled
+695315c6da740858d44f222f72488bf836e16add 8c7629d365c552760419a8b70f85ddd866ab3871 Webform CiviCRM <webform.civicrm@example.org> 1725317576 -0700	WIP on existing_contact_7: ff9c7b0 Honor submitted cid value in existing_contact
+8c7629d365c552760419a8b70f85ddd866ab3871 3efc5baab10ae2270160fe5fe993f1b9ba5b5c20 Webform CiviCRM <webform.civicrm@example.org> 1725318634 -0700	WIP on existing_contact_7: ff9c7b0 Honor submitted cid value in existing_contact
+3efc5baab10ae2270160fe5fe993f1b9ba5b5c20 67f6522fc9c55d9f4d95a4ece45d8650f442154e Webform CiviCRM <webform.civicrm@example.org> 1725319593 -0700	On existing_contact_4: Obsolete changes
+67f6522fc9c55d9f4d95a4ece45d8650f442154e 4269e8c74e81034ec6fcb8c8342a70bf7ba55fd5 Webform CiviCRM <webform.civicrm@example.org> 1725609288 -0700	On existing_contact_6: OK, needs comment cleanup
+4269e8c74e81034ec6fcb8c8342a70bf7ba55fd5 eae504d9d4bcb066729755fb26e6b0d9c5c5c232 Webform CiviCRM <webform.civicrm@example.org> 1725647904 -0700	On existing_contact_6: PR-966 Final
+eae504d9d4bcb066729755fb26e6b0d9c5c5c232 22fbc4a849f149da81fe549470da68c2f18a3458 Webform CiviCRM <webform.civicrm@example.org> 1725656004 -0700	On existing_contact_6: StripeTest Enable
+22fbc4a849f149da81fe549470da68c2f18a3458 07cd8b08515e31fff6cde6d2ad8b6a289fc6a91d Webform CiviCRM <webform.civicrm@example.org> 1726172534 -0700	WIP on 6.x: 3146aae Core now creates ufmatches on install, so trying to create it in test setup leads to fails (#1004)
+07cd8b08515e31fff6cde6d2ad8b6a289fc6a91d 72292d38dd326492de2349fcf95a65bae797170d Webform CiviCRM <webform.civicrm@example.org> 1726179708 -0700	On existing_contact_10.1_pass: All changes made to preproc
+72292d38dd326492de2349fcf95a65bae797170d 82025949abbe29076a2033ab9a9ba671540bc77d Webform CiviCRM <webform.civicrm@example.org> 1726251599 -0700	On existing_contact_10.3_fail: Commented out failures in ExistingContactELementTest in 10.3_fail
+82025949abbe29076a2033ab9a9ba671540bc77d 272bc656d6ad5ea9ad556f266bc01a91fa2f2e07 Webform CiviCRM <webform.civicrm@example.org> 1726253530 -0700	On existing_contact_10.3_pass: commented test
+272bc656d6ad5ea9ad556f266bc01a91fa2f2e07 d894bdfc500f1f4985661987df49ddd2e0a6d2c1 Bob Silvern <bsilvern@users.noreply.github.com> 1726711886 -0700	WIP on suppress_browser_deprecation_warnings_3: da7e728 dep notices always supressed

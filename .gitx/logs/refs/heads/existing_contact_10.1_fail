@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 3146aae26dc1b081d0cd76c4f5554dcc9bb70774 Webform CiviCRM <webform.civicrm@example.org> 1726172552 -0700	branch: Created from HEAD
+3146aae26dc1b081d0cd76c4f5554dcc9bb70774 f2f7467d11f96a33d8a53b940ed396d9bb52e233 Webform CiviCRM <webform.civicrm@example.org> 1726173397 -0700	commit: Demonstrate existing_contact select widget fails to lock fields
+f2f7467d11f96a33d8a53b940ed396d9bb52e233 55b0f5eada6505b705c5b1ef6d965f77decfdfb3 Webform CiviCRM <webform.civicrm@example.org> 1726557929 -0700	commit: Civi 5.79alpha1 compatibility: fix IDs of created contacts, add waitForAjax
+55b0f5eada6505b705c5b1ef6d965f77decfdfb3 f2f7467d11f96a33d8a53b940ed396d9bb52e233 Webform CiviCRM <webform.civicrm@example.org> 1726559637 -0700	reset: moving to HEAD~
+f2f7467d11f96a33d8a53b940ed396d9bb52e233 acff8e7174296fa9ed4d862692e1d3c77e2a93b4 Webform CiviCRM <webform.civicrm@example.org> 1726559710 -0700	merge 6.x: Merge made by the 'ort' strategy.
+acff8e7174296fa9ed4d862692e1d3c77e2a93b4 2a0a38c824228bd631400a5fa18a9ed9dfb1e186 Webform CiviCRM <webform.civicrm@example.org> 1726559753 -0700	commit: Civi 5.79alpha1 compatibility: fix IDs of created contacts, add waitForAjax

@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 3d17f97d6fe8e1536bce1f3e9cfdc8eabd881155 Bob Silvern <bsilvern@users.noreply.github.com> 1726696311 -0700	branch: Created from HEAD
+3d17f97d6fe8e1536bce1f3e9cfdc8eabd881155 fe1025846608d07514fb8064477c0501dce4bdcc Bob Silvern <bsilvern@users.noreply.github.com> 1726696345 -0700	commit: Suppress console deprecation messages
+fe1025846608d07514fb8064477c0501dce4bdcc 3d17f97d6fe8e1536bce1f3e9cfdc8eabd881155 Bob Silvern <bsilvern@users.noreply.github.com> 1726696601 -0700	reset: moving to HEAD~
+3d17f97d6fe8e1536bce1f3e9cfdc8eabd881155 3d32d649ab5f5721c9c8bc06a2d89d917ea8f2b9 Bob Silvern <bsilvern@users.noreply.github.com> 1726696606 -0700	reset: moving to HEAD~
+3d32d649ab5f5721c9c8bc06a2d89d917ea8f2b9 7cb605126405805b96c003d156c2e70dcf2b63b1 Bob Silvern <bsilvern@users.noreply.github.com> 1726696616 -0700	reset: moving to HEAD~
+7cb605126405805b96c003d156c2e70dcf2b63b1 110ddfcf7ea4b2a4681bc9005cbf81447a901427 Bob Silvern <bsilvern@users.noreply.github.com> 1726696650 -0700	commit: Suppress browser console deprecation warnings to avoid timeouts in unit tests.
+110ddfcf7ea4b2a4681bc9005cbf81447a901427 da7e728598ccc3e86478f24a171dee4e7a851df3 Bob Silvern <bsilvern@users.noreply.github.com> 1726708739 -0700	commit: dep notices always supressed

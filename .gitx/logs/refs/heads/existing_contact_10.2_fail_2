@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 5b98f296c2d2124811a0257f1f3b1421cd06e718 Webform CiviCRM <webform.civicrm@example.org> 1726185180 -0700	branch: Created from HEAD
+5b98f296c2d2124811a0257f1f3b1421cd06e718 811e6b80f50e83bf2013cfbf14c940cddab40c34 Webform CiviCRM <webform.civicrm@example.org> 1726185229 -0700	commit: Correct false error on required locked field (part 1)
+811e6b80f50e83bf2013cfbf14c940cddab40c34 209c9e4f0411e8720a2d405158d415766a2bbf15 Webform CiviCRM <webform.civicrm@example.org> 1726185607 -0700	commit: Correct false error on required locked field (part 2)
+209c9e4f0411e8720a2d405158d415766a2bbf15 811e6b80f50e83bf2013cfbf14c940cddab40c34 Webform CiviCRM <webform.civicrm@example.org> 1726192795 -0700	reset: moving to HEAD~

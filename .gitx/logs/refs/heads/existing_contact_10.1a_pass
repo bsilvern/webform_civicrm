@@ -1,0 +1,12 @@
+0000000000000000000000000000000000000000 f2f7467d11f96a33d8a53b940ed396d9bb52e233 Webform CiviCRM <webform.civicrm@example.org> 1726173421 -0700	branch: Created from HEAD
+f2f7467d11f96a33d8a53b940ed396d9bb52e233 df3cea7a17c7a67e2442bfd3e1b8d851e240d70e Webform CiviCRM <webform.civicrm@example.org> 1726173504 -0700	commit: Correct existing_contact select widget fails to lock fields
+df3cea7a17c7a67e2442bfd3e1b8d851e240d70e 002d7687d1f3f034f7b9bc2d15134c598c8f9ea3 Webform CiviCRM <webform.civicrm@example.org> 1726557719 -0700	commit: Civi 5.79alpha1 compatibility: fix IDs of created contacts, add waitForAjax
+002d7687d1f3f034f7b9bc2d15134c598c8f9ea3 df3cea7a17c7a67e2442bfd3e1b8d851e240d70e Webform CiviCRM <webform.civicrm@example.org> 1726559093 -0700	reset: moving to HEAD~
+df3cea7a17c7a67e2442bfd3e1b8d851e240d70e 0abb0f544d8c156d152159f882e6524084a19dd4 Webform CiviCRM <webform.civicrm@example.org> 1726559430 -0700	merge 6.x: Merge made by the 'ort' strategy.
+0abb0f544d8c156d152159f882e6524084a19dd4 6b7eda2da7faaf196efae9845b97249d06ac86cc Webform CiviCRM <webform.civicrm@example.org> 1726559595 -0700	commit: Civi 5.79alpha1 compatibility: fix IDs of created contacts, add waitForAjax
+6b7eda2da7faaf196efae9845b97249d06ac86cc 0abb0f544d8c156d152159f882e6524084a19dd4 Webform CiviCRM <webform.civicrm@example.org> 1726559827 -0700	reset: moving to HEAD~
+0abb0f544d8c156d152159f882e6524084a19dd4 df3cea7a17c7a67e2442bfd3e1b8d851e240d70e Webform CiviCRM <webform.civicrm@example.org> 1726559882 -0700	reset: moving to HEAD~
+df3cea7a17c7a67e2442bfd3e1b8d851e240d70e 5d598c06794ff9405ebf15cc6565320c286beb68 Bob Silvern <bsilvern@users.noreply.github.com> 1726561549 -0700	commit (amend): Merge branch '6.x' into existing_contact_10.1_pass
+5d598c06794ff9405ebf15cc6565320c286beb68 f2f7467d11f96a33d8a53b940ed396d9bb52e233 Bob Silvern <bsilvern@users.noreply.github.com> 1726561739 -0700	reset: moving to HEAD~
+f2f7467d11f96a33d8a53b940ed396d9bb52e233 6eaf617b3d029fcb6ea3e803805e048544322e4b Bob Silvern <bsilvern@users.noreply.github.com> 1726561991 -0700	commit: Correct issue: existing_contact select widget fails to lock fields
+6eaf617b3d029fcb6ea3e803805e048544322e4b 6eaf617b3d029fcb6ea3e803805e048544322e4b Bob Silvern <bsilvern@users.noreply.github.com> 1726562284 -0700	Branch: renamed refs/heads/existing_contact_10.1_pass to refs/heads/existing_contact_10.1a_pass

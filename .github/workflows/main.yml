@@ -23,37 +23,38 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - drupal: '10.1.*'
-            civicrm: '5.69.*'
-            php: '8.1'
-          - drupal: '10.2.*'
-            civicrm: '5.74.*'
-            php: '8.2'
-          - drupal: '10.2.*'
-            civicrm: '5.77.x-dev'
-            php: '8.2'
+          # - drupal: '10.1.*'
+          #   civicrm: '5.69.*'
+          #   php: '8.1'
+          # - drupal: '10.2.*'
+          #   civicrm: '5.74.*'
+          #   php: '8.2'
+          # - drupal: '10.2.*'
+          #   civicrm: '5.77.x-dev'
+          #   php: '8.2'
           - drupal: '10.3.*'
             civicrm: 'dev-master'
             php: '8.3'
     name: Drupal ${{ matrix.drupal }} | CiviCRM ${{ matrix.civicrm }}
     services:
-      # mysql:
-      #   #image: mysql:8.0
-      #   env:
-      #     MYSQL_ALLOW_EMPTY_PASSWORD: yes
-      #     MYSQL_DATABASE: db
-      #   ports:
-      #     - 3306
-      #   options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
       mysql:
         #image: mysql:8.0
-        image: mariadb:11.4
         env:
-          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
-          MARIADB_DATABASE: db
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: db
         ports:
           - 3306
         #options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=20s --health-timeout=10s --health-retries=6
+      # mysql:
+      #   #image: mysql:8.0
+      #   image: mariadb:11.4
+      #   env:
+      #     MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+      #     MARIADB_DATABASE: db
+      #   ports:
+      #     - 3306
+      #   options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2

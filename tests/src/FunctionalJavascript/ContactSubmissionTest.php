@@ -534,6 +534,9 @@ final class ContactSubmissionTest extends WebformCivicrmTestBase {
             $selector = "civicrm_1_contact_1_{$entity_type}_{$key}";
             $this->addFieldValue($selector, $value);
             $this->getSession()->wait(1000);
+            
+            //$field = $this->getSession()->getPage()->findField($selector);
+            //$field->getDriver()->keyPress($this->getXpath(), $char, $modifier);
           }
         }
         else {

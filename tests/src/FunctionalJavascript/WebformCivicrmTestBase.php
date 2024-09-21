@@ -315,7 +315,17 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       throw new ElementNotFoundException($this->getDriver(), 'form field', 'id|name|label|value|placeholder', $locator);
     }
     $field->doubleClick();
-    $field->setValue($value);
+
+    // Chromedriver 127.0.6533.119 bug: SendKey('/') is interpreted as a pageUp
+    // key if the window is not scrolled to the topmost position, resulting in
+    // intermittent failures. We'll work around this by using javascript to set
+    // fields which contain a "/" character.
+    // Ref: https://issuetracker.google.com/u/1/issues/42323689
+    if (strstr($value, '/') === false) {
+      $field->setValue($value);
+    } else {
+      $this->getSession()->executeScript("document.getElementsByName('$locator')[0].value = '$value'");
+    }
   }
 
   /**

@@ -125,7 +125,14 @@ final class StripeTest extends WebformCivicrmTestBase {
 
     $this->assertSession()->waitForElementVisible('css', 'input[name="cardnumber"]');
     $this->getSession()->getPage()->fillField('cardnumber', '4111 1111 1111 1111');
-    $this->getSession()->getPage()->fillField('exp-date', '11 / ' . $expYear);
+
+    // Chromedriver 127.0.6533.119 bug: SendKey('/') is interpreted as a pageUp
+    // key if the window is not scrolled to the topmost position, resulting in
+    // intermittent failures. We'll work around this by entering the date as
+    // "11YY" rather than "11/YY", as the Stripe widget accepts it either way.
+    // Ref: https://issuetracker.google.com/u/1/issues/42323689
+    $this->getSession()->getPage()->fillField('exp-date', '11' . $expYear);
+
     $this->getSession()->getPage()->fillField('cvc', '123');
     $this->getSession()->getPage()->fillField('postal', '12345');
 

@@ -102,8 +102,8 @@ final class StripeTest extends WebformCivicrmTestBase {
     $this->fillStripeCardWidget();
 
     $this->getSession()->getPage()->pressButton('Submit');
-    $this->assertPageNoErrorMessages();
     $this->htmlOutput();
+    $this->assertPageNoErrorMessages();
 
     $this->assertSession()->waitForElementVisible('css', '.webform-confirmation');
     $this->assertSession()->pageTextContains('New submission added to CiviCRM Webform Test.');

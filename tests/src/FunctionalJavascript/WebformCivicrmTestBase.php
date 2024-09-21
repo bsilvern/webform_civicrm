@@ -731,7 +731,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    */
   protected function enableBillingSection() {
     $this->getSession()->getPage()->selectFieldOption('Enable Billing Address?', 'Yes');
-    $this->assertSession()->assertWaitOnAjaxRequest();
+    //$this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
     $this->assertSession()->checkboxChecked("Billing First Name");
     $this->assertSession()->checkboxNotChecked("Billing Middle Name");

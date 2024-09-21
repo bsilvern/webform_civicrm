@@ -765,7 +765,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     $this->getSession()->getPage()->fillField('City', $params['city']);
 
     $this->getSession()->getPage()->selectFieldOption('Country', $params['country']);
-    $this->getSession()->wait(1000);
+    // Failure observed selected State/Provnce below with 1000ms delay
+    //$this->getSession()->wait(1000);
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->getSession()->getPage()->selectFieldOption('State/Province', $params['state_province']);
 
     $this->getSession()->getPage()->fillField('Postal Code', $params['postal_code']);

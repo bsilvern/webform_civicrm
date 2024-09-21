@@ -191,6 +191,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->getSession()->getPage()->getText(); //Temp: Does this help?
     $this->htmlOutput();
     $this->getSession()->getPage()->clickLink('2. Contact 2');
     $this->getSession()->getPage()->checkField("civicrm_2_contact_1_contact_existing");
@@ -249,7 +250,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->addFieldValue('civicrm_2_contact_1_contact_last_name', 'CooperUpdated');
     $this->getSession()->getPage()->pressButton('Next >');
 
-    $this->assertSession()->waitForField('edit-wizard-prev');
+    $this->assertSession()->waitForElement('css', '#edit-wizard-prev');
     $this->getSession()->getPage()->pressButton('edit-wizard-prev');
     $this->assertSession()->waitForField('edit-civicrm-2-contact-1-contact-first-name');
     $this->assertFieldValue('edit-civicrm-2-contact-1-contact-first-name', 'MarkUpdated');

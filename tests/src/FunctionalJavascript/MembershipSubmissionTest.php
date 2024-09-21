@@ -353,7 +353,8 @@ final class MembershipSubmissionTest extends WebformCivicrmTestBase {
     // $this->createScreenshot($this->htmlOutputDirectory . 'KG.png');
 
     $this->getSession()->getPage()->pressButton('Next >');
-    $this->assertSession()->waitForField('wf-crm-billing-items');
+    //$this->assertSession()->waitForField('wf-crm-billing-items');
+    $this->assertSession()->waitForElement('css', '#wf-crm-billing-items');
     $this->htmlOutput();
 
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');

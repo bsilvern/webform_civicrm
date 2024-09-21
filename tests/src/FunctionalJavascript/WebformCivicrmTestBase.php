@@ -321,7 +321,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     // intermittent failures. We'll work around this by using javascript to set
     // fields which contain a "/" character.
     // Ref: https://issuetracker.google.com/u/1/issues/42323689
-    if (strstr($value, '/') === false) {
+    if (is_array($value) || strstr($value, '/') === false) {
       $field->setValue($value);
     } else {
       $this->getSession()->executeScript("document.getElementsByName('$locator')[0].value = '$value'");
@@ -430,7 +430,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     // that both Ajax calls have been completed.
     $this->getSession()->getPage()->pressButton('Save');
     $this->assertSession()->assertWaitOnAjaxRequest();
-    $this->assertSession()->waitForText('has been updated.'); //BobS: Left over?
+    $this->assertSession()->waitForText('has been updated.');
   }
 
   /**

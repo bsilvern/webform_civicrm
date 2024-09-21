@@ -110,7 +110,6 @@ final class ActivitySubmissionTest extends WebformCivicrmTestBase {
       $multiple = TRUE;
       $this->getSession()->getPage()->find('xpath', '//div[contains(@class, "form-item-civicrm-1-activity-1-activity-assignee-contact-id")]/a[contains(@class, "select-multiple")]')->click();
     }
-    //$this->assertSession()->assertWaitOnAjaxRequest(); //BobS: move up?
     for ($i = 1; $i <= $num; $i++) {
       $this->getSession()->getPage()->selectFieldOption('civicrm_1_activity_1_activity_assignee_contact_id[]', "Contact {$i}", $multiple);
     }

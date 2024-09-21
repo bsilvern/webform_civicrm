@@ -404,8 +404,23 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       $this->assertSession()->checkboxChecked('properties[extra][multiple]');
     }
     $this->htmlOutput();
+
+    // Wait for ajax message from previous click of Save button to no longer be
+    // visible to avoid falling through the following waitForText()
+    // prematurely.
+    do {
+      $ajax_message_visible = $this->assertSession()->waitForText('has been updated.', 50);
+    } while ($ajax_message_visible);
+
+    // The following click of the Save button generates two Ajax calls
+    // which would generally present a problem for assertWaitOnAjaxRequest() as
+    // that function might return after the first Ajax call is completed.
+    // Fortunately, the "has been updated" is displayed after
+    // the second Ajax call completes, so by waiting for that message we ensure
+    // that both Ajax calls have been completed.
     $this->getSession()->getPage()->pressButton('Save');
-    $this->assertSession()->waitForText('has been updated.');
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->assertSession()->waitForText('has been updated.'); //BobS: Left over?
   }
 
   /**
@@ -619,7 +634,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     // visible to avoid falling through the following waitForElementVisible
     // prematurely.
     do {
-      $ajax_message_visible = $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages', 100);
+      $ajax_message_visible = $this->assertSession()->waitForElementVisible('css', '.webform-ajax-messages', 50);
     } while ($ajax_message_visible);
 
     // Note: The following click of the Save button generates two Ajax calls

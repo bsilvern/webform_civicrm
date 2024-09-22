@@ -242,8 +242,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     $this->getSession()->getPage()->pressButton('Enable It');
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->getSession()->getPage()->selectFieldOption('Currency', 'USD');
-    $this->getSession()->getPage()->selectFieldOption('Financial Type', $params['financial_type_id'] ?? 1);
-    $this->assertSession()->assertWaitOnAjaxRequest();
+    // $this->getSession()->getPage()->selectFieldOption('Financial Type', $params['financial_type_id'] ?? 1);
+    // $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->selectFieldOptionWaitAjax('Financial Type', $params['financial_type_id'] ?? 1);
 
     if (!empty($params['payment_processor_id'])) {
       $this->getSession()->getPage()->selectFieldOption('Payment Processor', $params['payment_processor_id']);
@@ -261,7 +262,8 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       }
     }
     else {
-      $this->getSession()->getPage()->selectFieldOption('Enable Receipt?', 'No');
+      //$this->getSession()->getPage()->selectFieldOption('Enable Receipt?', 'No');
+      $this->selectFieldOptionWaitAjax('Enable Receipt?', 'No');
       $this->assertSession()->assertWaitOnAjaxRequest();
     }
   }
@@ -753,6 +755,23 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     $this->assertSession()->checkboxChecked("State/Province");
   }
 
+  /** 
+   * Select an option in a select element, and wait for Ajax only if the value changed.
+   * 
+   * This avoids calling assertWaitOnAjaxRequest() when no Ajax call is expected,
+   * as that will throw a RuntimeException if no Ajax calls have occured on the current
+   * page, and such calls will throw an exception in Drupal 11.0.
+   */
+  protected function selectFieldOptionWaitAjax($locator, $value, $multiple = false) { 
+    $select_element = $this->getSession()->getPage()->findField($locator);
+    $option = $select_element->find('named_exact', ['option', $value]);
+    $this->getSession()->getPage()->selectFieldOption($locator, $value, $multiple);
+    if (!$option->isSelected()) {
+      $this->assertSession()->assertWaitOnAjaxRequest();
+    }
+  }
+
+
   /**
    * Insert values in billing fields.
    *
@@ -764,10 +783,11 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     $this->getSession()->getPage()->fillField('Street Address', $params['street_address']);
     $this->getSession()->getPage()->fillField('City', $params['city']);
 
-    $this->getSession()->getPage()->selectFieldOption('Country', $params['country']);
-    // Failure observed selected State/Provnce below with 1000ms delay
-    //$this->getSession()->wait(1000);
-    $this->assertSession()->assertWaitOnAjaxRequest();
+    //$this->getSession()->getPage()->selectFieldOption('Country', $params['country']);
+    $this->selectFieldOptionWaitAjax('Country', $params['country']);
+    // Failure observed selected State/Provnce below with 1000ms delay, added ajax wait and 
+    // increased time to 2000.
+    $this->getSession()->wait(2000);
     $this->getSession()->getPage()->selectFieldOption('State/Province', $params['state_province']);
 
     $this->getSession()->getPage()->fillField('Postal Code', $params['postal_code']);

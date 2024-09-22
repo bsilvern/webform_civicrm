@@ -86,6 +86,7 @@ final class ActivitySubmissionTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', $num);
+    $this->assertSession()->waitForElement('css', "#edit-contact-{$num}");
     $this->htmlOutput();
 
     $this->getSession()->getPage()->clickLink('Activities');

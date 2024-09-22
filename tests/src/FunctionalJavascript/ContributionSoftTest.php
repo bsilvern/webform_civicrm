@@ -17,6 +17,7 @@ final class ContributionSoftTest extends WebformCivicrmTestBase {
     ]));
     $this->enableCivicrmOnWebform();
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
     $this->htmlOutput();
 
     $params = [

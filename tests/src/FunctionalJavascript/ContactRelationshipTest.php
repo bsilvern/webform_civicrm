@@ -47,6 +47,7 @@ final class ContactRelationshipTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
     $this->htmlOutput();
 
     $this->getSession()->getPage()->clickLink('2. Contact 2');
@@ -170,6 +171,7 @@ final class ContactRelationshipTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
     $this->htmlOutput();
 
     // Configuring Contact 1 - Student

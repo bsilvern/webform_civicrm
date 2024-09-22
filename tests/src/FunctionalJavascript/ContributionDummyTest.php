@@ -191,7 +191,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
-    $this->getSession()->getPage()->getText(); //Temp: Does this help?
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
+    //$this->getSession()->getPage()->getText(); //Temp: Does this help?
     $this->htmlOutput();
     $this->getSession()->getPage()->clickLink('2. Contact 2');
     $this->getSession()->getPage()->checkField("civicrm_2_contact_1_contact_existing");
@@ -361,6 +362,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
     $this->htmlOutput();
     $this->getSession()->getPage()->clickLink('2. Contact 2');
     $this->getSession()->getPage()->selectFieldOption('2_contact_type', 'organization');
@@ -486,6 +488,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
 
     $this->configureContributionTab();
     $this->getSession()->getPage()->checkField("Contribution Amount");
@@ -558,6 +561,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
 
     $this->configureContributionTab();
     $this->getSession()->getPage()->checkField("Contribution Amount");
@@ -639,6 +643,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->enableCivicrmOnWebform();
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
 
     // Enable email field for contact 2.
     $this->getSession()->getPage()->clickLink("Contact 2");

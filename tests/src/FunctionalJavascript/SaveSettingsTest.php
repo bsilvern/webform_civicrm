@@ -95,6 +95,7 @@ final class SaveSettingsTest extends WebformCivicrmTestBase {
     ]));
 
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
     $this->htmlOutput();
 
     $this->getSession()->getPage()->clickLink('Activities');
@@ -120,6 +121,7 @@ final class SaveSettingsTest extends WebformCivicrmTestBase {
 
     // Repeat the step and delete activity type element from the page.
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
     $this->htmlOutput();
 
     $this->getSession()->getPage()->clickLink('Activities');

@@ -41,6 +41,7 @@ class AjaxController implements ContainerInjectionInterface {
    *   The operation to perform: stateProvince or county
    */
   public function handle($key, $input = '') {
+    //sleep(3); //BobS
     $this->civicrm->initialize();
     if ($key === 'stateProvince') {
       return $this->stateProvince($input);

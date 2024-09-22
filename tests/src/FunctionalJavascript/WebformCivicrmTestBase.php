@@ -760,7 +760,12 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    * 
    * This avoids calling assertWaitOnAjaxRequest() when no Ajax call is expected,
    * as that will throw a RuntimeException if no Ajax calls have occured on the current
-   * page, and such calls will throw an exception in Drupal 11.0.
+   * page, and all such calls will throw an exception in Drupal 11.0.
+   *
+   * @param string  $locator  input id, name or label
+   * @param string  $value    option value
+   * @param boolean $multiple select multiple options
+   *
    */
   protected function selectFieldOptionWaitAjax($locator, $value, $multiple = false) { 
     $select_element = $this->getSession()->getPage()->findField($locator);
@@ -786,9 +791,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
 
     //$this->getSession()->getPage()->selectFieldOption('Country', $params['country']);
     $this->selectFieldOptionWaitAjax('Country', $params['country']);
-    // Failure observed selected State/Provnce below with 1000ms delay, added ajax wait and 
+    // Failure observed below selecting  State/Province with 1000ms delay, added ajax wait and 
     // increased time to 2000.
-    $this->getSession()->wait(2000);
+    //$this->getSession()->wait(2000);
     $this->getSession()->getPage()->selectFieldOption('State/Province', $params['state_province']);
 
     $this->getSession()->getPage()->fillField('Postal Code', $params['postal_code']);

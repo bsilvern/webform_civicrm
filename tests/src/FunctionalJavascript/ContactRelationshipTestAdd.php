@@ -58,7 +58,8 @@ final class ContactRelationshipTestAdd extends WebformCivicrmTestBase {
     $this->assertSession()->waitForText('Number of Contacts');
     $this->assertSession()->waitForField('number_of_contacts');
     $this->getSession()->getPage()->selectFieldOption('number_of_contacts', 2);
-    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->assertSession()->waitForElement('css', "#edit-contact-2");
+    //$this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
 
     // Configuring Contact 1 - Student

@@ -264,7 +264,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     else {
       //$this->getSession()->getPage()->selectFieldOption('Enable Receipt?', 'No');
       $this->selectFieldOptionWaitAjax('Enable Receipt?', 'No');
-      $this->assertSession()->assertWaitOnAjaxRequest();
+      //$this->assertSession()->assertWaitOnAjaxRequest();
     }
   }
 
@@ -765,8 +765,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
   protected function selectFieldOptionWaitAjax($locator, $value, $multiple = false) { 
     $select_element = $this->getSession()->getPage()->findField($locator);
     $option = $select_element->find('named_exact', ['option', $value]);
+    $is_option_selected = $option->isSelected();
     $this->getSession()->getPage()->selectFieldOption($locator, $value, $multiple);
-    if (!$option->isSelected()) {
+    if (!$is_option_selected) {
       $this->assertSession()->assertWaitOnAjaxRequest();
     }
   }
@@ -823,7 +824,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
       $this->fillBillingFields($billingValues);
     }
     // Wait for the credit card form to load in.
-    $this->assertSession()->waitForField('credit_card_number');
+    $this->assertSession()->waitForElementVisible('css', '#credit_card_number');
     $this->getSession()->getPage()->fillField('credit_card_number', '4222222222222220');
     $this->getSession()->getPage()->fillField('cvv2', '123');
     $this->getSession()->getPage()->selectFieldOption($this->getCreditCardMonthFieldName(), '11');

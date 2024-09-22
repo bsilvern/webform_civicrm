@@ -23,14 +23,30 @@ final class BobSLoginTest extends WebformCivicrmTestBase {
     parent::setUp();
   }
 
-  /**
-   * Test submitting an activity
-   */
-  public function testLoginLoop() {
+  public function testLoginLoop1() {
     $this->htmlOutput();
     for ($i=0; $i<100; $i++) {
       $this->drupalLogin($this->rootUser);
       $this->htmlOutput();
+      $this->assertEquals(1, \Drupal::currentUser()->id(), "i=$i");
+    }
+  }
+
+  public function testLoginLoop2() {
+    $this->htmlOutput();
+    for ($i=0; $i<100; $i++) {
+      $this->drupalLogin($this->rootUser);
+      $this->htmlOutput();
+      $this->assertEquals(1, \Drupal::currentUser()->id(), "i=$i");
+    }
+  }
+
+  public function testLoginLoop3() {
+    $this->htmlOutput();
+    for ($i=0; $i<100; $i++) {
+      $this->drupalLogin($this->rootUser);
+      $this->htmlOutput();
+      $this->assertEquals(1, \Drupal::currentUser()->id(), "i=$i");
     }
   }
 }

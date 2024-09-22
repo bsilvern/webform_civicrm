@@ -189,7 +189,7 @@ jobs:
           # temporary to match downgraded chrome
           chromedriver-version: '127.0.6533.119'
       - name: Run chromedriver
-        run: chromedriver --port=9515 --verbose &
+        run: chromedriver --port=9515 &
       - name: Run php built-in server
         run: php -S 127.0.0.1:8080 -t ~/drupal/web &
       - name: Run PHPUnit

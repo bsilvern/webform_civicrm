@@ -14,39 +14,63 @@ final class BobSLoginTest extends WebformCivicrmTestBase {
   /**
    * @var array
    */
-  private $_contacts;
+  private $loops;
 
   /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
     parent::setUp();
+    $this->loops = 10;
   }
 
-  public function testLoginLoop1() {
+  public function loop($test_num) {
     $this->htmlOutput();
-    for ($i=0; $i<100; $i++) {
+    for ($i=0; $i<$this->loops; $i++) {
       $this->drupalLogin($this->rootUser);
       $this->htmlOutput();
-      $this->assertEquals(1, \Drupal::currentUser()->id(), "i=$i");
+      $this->assertEquals(1, \Drupal::currentUser()->id(), "test=$test_num, i=$i");
     }
   }
 
-  public function testLoginLoop2() {
-    $this->htmlOutput();
-    for ($i=0; $i<100; $i++) {
-      $this->drupalLogin($this->rootUser);
-      $this->htmlOutput();
-      $this->assertEquals(1, \Drupal::currentUser()->id(), "i=$i");
-    }
+  public function testLogin0() {
+    $this->loop(0);
   }
 
-  public function testLoginLoop3() {
-    $this->htmlOutput();
-    for ($i=0; $i<100; $i++) {
-      $this->drupalLogin($this->rootUser);
-      $this->htmlOutput();
-      $this->assertEquals(1, \Drupal::currentUser()->id(), "i=$i");
-    }
+  public function testLogin1() {
+    $this->loop(1);
   }
+
+  public function testLogin2() {
+    $this->loop(2);
+  }
+
+  public function testLogin3() {
+    $this->loop(3);
+  }
+
+  public function testLogin4() {
+    $this->loop(4);
+  }
+
+  public function testLogin5() {
+    $this->loop(5);
+  }
+
+  public function testLogin6() {
+    $this->loop(6);
+  }
+
+  public function testLogin7() {
+    $this->loop(7);
+  }
+
+  public function testLogin8() {
+    $this->loop(8);
+  }
+
+  public function testLogin9() {
+    $this->loop(9);
+  }
+  
 }

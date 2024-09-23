@@ -253,6 +253,7 @@ jobs:
               </Directory>
               ErrorLog ${APACHE_LOG_DIR}/error.log
               CustomLog ${APACHE_LOG_DIR}/access.log combined
+            </VirtualHost>
           EOF
           sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
           sudo bash -c 'echo -e \\nexport APACHE_RUN_USER=runner\\nexport APACHE_RUN_GROUP=runner\\n >> /etc/apache2/envvars'

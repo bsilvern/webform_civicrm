@@ -214,13 +214,13 @@ jobs:
           mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/
       - name: Run chromedriver
         run: |
-          chromedriver --port=9515 --verbose > /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
+          chromedriver --port=9515 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
           #export DISPLAY=:99
           #chromedriver --url-base=/wd/hub &
           #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       - name: Run php built-in server
         #run: php -S 127.0.0.1:8080 -t ~/drupal/web &
-        run: PHP_CLI_SERVER_WORKERS=8 php -S 127.0.0.1:8080 -t ~/drupal/web &
+        run: PHP_CLI_SERVER_WORKERS=32 php -S 127.0.0.1:8080 -t ~/drupal/web &
       # - name: Patch Webdriver curl
       #   if: ${{ matrix.drupal != '10.3.*' }}
       #   run: |
@@ -289,7 +289,7 @@ jobs:
           SIMPLETEST_DB: mysql://root:@127.0.0.1:${{ job.services.mysql.ports[3306] }}/db
           SIMPLETEST_BASE_URL: http://127.0.0.1:8080
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless"]}}, "http://127.0.0.1:9515"]'
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-file", "/home/runner/drupal/web/sites/simpletest/browser_output"]}}, "http://127.0.0.1:9515"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-file", "/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext
           DEV_EXTENSION_URL: http://127.0.0.1:8080/sites/default/files/civicrm/ext

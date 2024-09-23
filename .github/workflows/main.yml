@@ -230,7 +230,7 @@ jobs:
           sudo apt update
           sudo apt install apache2
           cat << 'EOF' > /tmp/simpletest.conf
-            <VirtualHost *:80>
+            <VirtualHost *:8080>
               ServerAdmin webmaster@localhost
               ServerName 127.0.0.1:8080
               #ServerAlias www.your_domain

@@ -232,7 +232,7 @@ jobs:
           cat << 'EOF' > /tmp/simpletest.conf
             <VirtualHost *:8080>
               ServerAdmin webmaster@localhost
-              ServerName 127.0.0.1:8080
+              ServerName 127.0.0.1
               #ServerAlias www.your_domain
               DocumentRoot /home/runner/drupal/web
               ErrorLog ${APACHE_LOG_DIR}/error.log
@@ -249,6 +249,8 @@ jobs:
           sudo apache2ctl configtest #check for config errors
           sudo systemctl restart apache2
           sudo systemctl status apache2
+          cd /tmp
+          wget http://127.0.0.1:8080
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY

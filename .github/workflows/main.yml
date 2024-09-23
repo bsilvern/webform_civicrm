@@ -206,9 +206,26 @@ jobs:
           chromedriver --port=9515 &
           #export DISPLAY=:99
           #chromedriver --url-base=/wd/hub &
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+          #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       - name: Run php built-in server
         run: php -S 127.0.0.1:8080 -t ~/drupal/web &
+      - name: Patch Webdriver curl
+        run: |
+          cat << 'EOF' > /tmp/patch1
+          --- /home/bob/sites/mink2/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php   2023-12-07 23:11:19.000000000 -0800
+          +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 19:35:40.990209203 -0700
+          @@ -102,7 +102,8 @@
+                */
+              protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
+              {
+          -        if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
+          +        usleep(50000); //BobS
+          +        if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
+                      throw WebDriverException::factory(
+                          WebDriverException::NO_PARAMETERS_EXPECTED,
+                          sprintf(
+          EOF
+          patch /vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY

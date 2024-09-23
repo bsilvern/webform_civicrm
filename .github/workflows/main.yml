@@ -67,7 +67,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
             php-version: ${{ matrix.php }}
-            extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, soap, intl, gd, exif, iconv
+            extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, libapache2-mod-php
             coverage: none
             tools: composer:v2
       - name: Get composer cache directory
@@ -261,12 +261,15 @@ jobs:
           #sudo chmod -R 777 /home/runner/drupal
           sudo a2ensite simpletest.conf
           sudo a2dissite 000-default.conf
+          #sudo a2dismod 'php*'
+          #sudo a2enmod ${{ matrix.php }}
           sudo apache2ctl configtest #check for config errors
           sudo systemctl restart apache2
           sudo systemctl status apache2
           ps alx | grep apache
           cd /tmp
-          wget http://127.0.0.1:8080 || echo 'wget http://127.0.0.1:8080 failed'
+          wget http://127.0.0.1:8080 -O index1.php || echo 'wget http://127.0.0.1:8080 failed'
+          cat index1.php
           cat /var/log/apache2/error.log
           cat /var/log/apache2/access.log
       - name: Run PHPUnit

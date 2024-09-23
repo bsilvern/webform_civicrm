@@ -243,8 +243,8 @@ jobs:
             </VirtualHost>
           EOF
           sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
-          #sudo chown -R www-data:www-data ~/drupal
-          sudo chmod -R 777 ~/drupal
+          sudo chown -R www-data:www-data /home/runner/drupal
+          sudo chmod -R 777 /home/runner/drupal
           sudo a2ensite simpletest.conf
           sudo a2dissite 000-default.conf
           sudo apache2ctl configtest #check for config errors
@@ -252,6 +252,8 @@ jobs:
           sudo systemctl status apache2
           cd /tmp
           wget http://127.0.0.1:8080
+          cat /var/log/apache2/error.log
+          cat /var/log/apache2/access.log
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY

@@ -238,20 +238,20 @@ jobs:
               DocumentRoot /home/runner/drupal/web
               ErrorLog ${APACHE_LOG_DIR}/error.log
               CustomLog ${APACHE_LOG_DIR}/access.log combined
-              #User runner
-              #Group runner
             </VirtualHost>
           EOF
           sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
-          sudo chown -R www-data:www-data /home/runner/drupal
-          sudo chmod -R 777 /home/runner/drupal
+          sudo echo 'export APACHE_RUN_USER=runner' >> /etc/apache2/envars
+          sudo echo 'export APACHE_RUN_GROUP=runner' >> /etc/apache2/envars
+          #sudo chown -R www-data:www-data /home/runner/drupal
+          #sudo chmod -R 777 /home/runner/drupal
           sudo a2ensite simpletest.conf
           sudo a2dissite 000-default.conf
           sudo apache2ctl configtest #check for config errors
           sudo systemctl restart apache2
           sudo systemctl status apache2
           cd /tmp
-          wget http://127.0.0.1:8080
+          wget http://127.0.0.1:8080 || echo 'wget http://127.0.0.1:8080 failed'
           cat /var/log/apache2/error.log
           cat /var/log/apache2/access.log
       - name: Run PHPUnit

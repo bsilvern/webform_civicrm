@@ -839,7 +839,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     $this->getSession()->getPage()->pressButton('Submit');
     $this->htmlOutput();
     $this->assertPageNoErrorMessages();
-    $this->assertSession()->waitForText('New submission added to CiviCRM Webform Test.');
+    //$this->assertSession()->waitForText('New submission added to CiviCRM Webform Test.');
+    $this->assertSession()->elementTextContains('css', '.webform-confirmation__message', 'New submission added to CiviCRM Webform Test.');
+
   }
 
   /**

@@ -215,7 +215,7 @@ jobs:
           --- /home/bob/sites/mink2/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php   2023-12-07 23:11:19.000000000 -0800
           +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 19:35:40.990209203 -0700
           @@ -102,7 +102,8 @@
-                */
+               */
               protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
               {
           -        if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {

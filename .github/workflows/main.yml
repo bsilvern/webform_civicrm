@@ -55,28 +55,6 @@ jobs:
       #     - 3306
       #   options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
-      - name: Install Apache web server
-        run: |
-          sudo apt update
-          sudo apt install apache2
-          cat << 'EOF' > /tmp/simpletest.conf
-            <VirtualHost *:80>
-              ServerAdmin webmaster@localhost
-              ServerName 127.0.0.1:8080
-              #ServerAlias www.your_domain
-              DocumentRoot /home/runner/drupal/web
-              ErrorLog ${APACHE_LOG_DIR}/error.log
-              CustomLog ${APACHE_LOG_DIR}/access.log combined
-              #User runner
-              #Group runner
-            </VirtualHost>
-          EOF
-          sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
-          sudo a2ensite simpletest.conf
-          sudo a2dissite 000-default.conf
-          sudo apache2ctl configtest #check for config errors
-          sudo systemctl restart apache2
-          sudo systemctl status apache2
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
@@ -247,6 +225,30 @@ jobs:
                            WebDriverException::NO_PARAMETERS_EXPECTED,
           EOF
           #patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
+      - name: Install Apache web server
+        run: |
+          sudo apt update
+          sudo apt install apache2
+          cat << 'EOF' > /tmp/simpletest.conf
+            <VirtualHost *:80>
+              ServerAdmin webmaster@localhost
+              ServerName 127.0.0.1:8080
+              #ServerAlias www.your_domain
+              DocumentRoot /home/runner/drupal/web
+              ErrorLog ${APACHE_LOG_DIR}/error.log
+              CustomLog ${APACHE_LOG_DIR}/access.log combined
+              #User runner
+              #Group runner
+            </VirtualHost>
+          EOF
+          sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
+          #sudo chown -R www-data:www-data ~/drupal
+          sudo chmod -R 777 ~/drupal
+          sudo a2ensite simpletest.conf
+          sudo a2dissite 000-default.conf
+          sudo apache2ctl configtest #check for config errors
+          sudo systemctl restart apache2
+          sudo systemctl status apache2
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY

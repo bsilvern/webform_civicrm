@@ -211,7 +211,7 @@ jobs:
           chromedriver-version: '127.0.6533.119'
       - name: Create BROWSERTEST_OUTPUT_DIRECTORY
         run: |
-          mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
+          mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/
       - name: Run chromedriver
         run: |
           chromedriver --port=9515 --verbose > /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &

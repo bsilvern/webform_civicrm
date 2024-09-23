@@ -60,6 +60,7 @@ jobs:
           whoami
           cd ~/
           pwd
+          touch test1
           ls -al .
           env
       - uses: actions/checkout@v4
@@ -243,9 +244,15 @@ jobs:
               ServerName 127.0.0.1
               #ServerAlias www.your_domain
               DocumentRoot /home/runner/drupal/web
+              <Directory "/home/runner/drupal/web">
+                Options All
+                AllowOverride All
+                <IfModule mod_authz_host.c>
+                    Require all granted
+                </IfModule>
+              </Directory>
               ErrorLog ${APACHE_LOG_DIR}/error.log
               CustomLog ${APACHE_LOG_DIR}/access.log combined
-            </VirtualHost>
           EOF
           sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
           sudo bash -c 'echo -e \\nexport APACHE_RUN_USER=runner\\nexport APACHE_RUN_GROUP=runner\\n >> /etc/apache2/envvars'
@@ -256,6 +263,7 @@ jobs:
           sudo apache2ctl configtest #check for config errors
           sudo systemctl restart apache2
           sudo systemctl status apache2
+          ps alx | grep apache
           cd /tmp
           wget http://127.0.0.1:8080 || echo 'wget http://127.0.0.1:8080 failed'
           cat /var/log/apache2/error.log

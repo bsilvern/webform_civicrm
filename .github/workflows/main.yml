@@ -259,6 +259,7 @@ jobs:
           sudo bash -c 'echo -e \\nexport APACHE_RUN_USER=runner\\nexport APACHE_RUN_GROUP=runner\\n >> /etc/apache2/envvars'
           #sudo chown -R www-data:www-data /home/runner/drupal
           #sudo chmod -R 777 /home/runner/drupal
+          sudo apt-get install libapache2-mod-${{ matrix.php }}
           sudo a2ensite simpletest.conf
           sudo a2dissite 000-default.conf
           #sudo a2dismod 'php*'

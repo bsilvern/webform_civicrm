@@ -216,12 +216,12 @@ jobs:
           +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 22:47:23.852676851 -0700
           @@ -102,6 +102,7 @@
                 */
-              protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
-              {
+               protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
+               {
           +        usleep(50000); //BobS
-                  if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
-                      throw WebDriverException::factory(
-                          WebDriverException::NO_PARAMETERS_EXPECTED,
+                   if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
+                       throw WebDriverException::factory(
+                           WebDriverException::NO_PARAMETERS_EXPECTED,
           EOF
           patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
       - name: Run PHPUnit

@@ -213,17 +213,15 @@ jobs:
         run: |
           cat << 'EOF' > /tmp/patch1
           --- /home/bob/sites/mink2/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php   2023-12-07 23:11:19.000000000 -0800
-          +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 19:35:40.990209203 -0700
-          @@ -102,7 +102,8 @@
-               */
+          +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 22:47:23.852676851 -0700
+          @@ -102,6 +102,7 @@
+                */
               protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
               {
-          -        if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
           +        usleep(50000); //BobS
-          +        if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
+                  if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
                       throw WebDriverException::factory(
                           WebDriverException::NO_PARAMETERS_EXPECTED,
-                          sprintf(
           EOF
           patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
       - name: Run PHPUnit

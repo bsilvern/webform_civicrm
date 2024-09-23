@@ -225,7 +225,7 @@ jobs:
                           WebDriverException::NO_PARAMETERS_EXPECTED,
                           sprintf(
           EOF
-          patch /vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
+          patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY

@@ -210,7 +210,7 @@ jobs:
       - name: Run php built-in server
         run: php -S 127.0.0.1:8080 -t ~/drupal/web &
       - name: Patch Webdriver curl
-        if: ${{ matrix.drual != '10.3.*' }}
+        if: ${{ matrix.drupal != '10.3.*' }}
         run: |
           cat << 'EOF' > /tmp/patch1
           --- /home/bob/sites/mink2/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php   2023-12-07 23:11:19.000000000 -0800

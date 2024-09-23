@@ -209,31 +209,34 @@ jobs:
         with:
           # temporary to match downgraded chrome
           chromedriver-version: '127.0.6533.119'
+      - name: Create BROWSERTEST_OUTPUT_DIRECTORY
+        run: |
+          mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
       - name: Run chromedriver
         run: |
-          chromedriver --port=9515 &
+          chromedriver --port=9515 --verbose > /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
           #export DISPLAY=:99
           #chromedriver --url-base=/wd/hub &
           #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       - name: Run php built-in server
         #run: php -S 127.0.0.1:8080 -t ~/drupal/web &
         run: PHP_CLI_SERVER_WORKERS=8 php -S 127.0.0.1:8080 -t ~/drupal/web &
-      - name: Patch Webdriver curl
-        if: ${{ matrix.drupal != '10.3.*' }}
-        run: |
-          cat << 'EOF' > /tmp/patch1
-          --- /home/bob/sites/mink2/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php   2023-12-07 23:11:19.000000000 -0800
-          +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 22:47:23.852676851 -0700
-          @@ -102,6 +102,7 @@
-                */
-               protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
-               {
-          +        usleep(50000); // Add a delay in desperate attempt to reduce random unexplained failures
-                   if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
-                       throw WebDriverException::factory(
-                           WebDriverException::NO_PARAMETERS_EXPECTED,
-          EOF
-          patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
+      # - name: Patch Webdriver curl
+      #   if: ${{ matrix.drupal != '10.3.*' }}
+      #   run: |
+      #     cat << 'EOF' > /tmp/patch1
+      #     --- /home/bob/sites/mink2/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php   2023-12-07 23:11:19.000000000 -0800
+      #     +++ /home/bob/sites/mink3/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.phpX  2024-09-22 22:47:23.852676851 -0700
+      #     @@ -102,6 +102,7 @@
+      #           */
+      #          protected function curl($requestMethod, $command, $parameters = null, $extraOptions = array())
+      #          {
+      #     +        usleep(50000); // Add a delay in desperate attempt to reduce random unexplained failures
+      #              if ($parameters && is_array($parameters) && $requestMethod !== 'POST') {
+      #                  throw WebDriverException::factory(
+      #                      WebDriverException::NO_PARAMETERS_EXPECTED,
+      #     EOF
+      #     patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
       # - name: Install Apache web server
       #   run: |
       #     sudo apt update
@@ -285,7 +288,8 @@ jobs:
           SYMFONY_DEPRECATIONS_HELPER: 999999
           SIMPLETEST_DB: mysql://root:@127.0.0.1:${{ job.services.mysql.ports[3306] }}/db
           SIMPLETEST_BASE_URL: http://127.0.0.1:8080
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless"]}}, "http://127.0.0.1:9515"]'
+          #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless"]}}, "http://127.0.0.1:9515"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-file", "/home/runner/drupal/web/sites/simpletest/browser_output"]}}, "http://127.0.0.1:9515"]'
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext
           DEV_EXTENSION_URL: http://127.0.0.1:8080/sites/default/files/civicrm/ext

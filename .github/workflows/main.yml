@@ -59,7 +59,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install apache2
-          sudo cat << 'EOF' > /etc/apache2/sites-available/simpletest.conf
+          cat << 'EOF' > /tmp/simpletest.conf
             <VirtualHost *:80>
               ServerAdmin webmaster@localhost
               ServerName 127.0.0.1:8080
@@ -71,10 +71,12 @@ jobs:
               #Group runner
             </VirtualHost>
           EOF
+          sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
           sudo a2ensite simpletest.conf
           sudo a2dissite 000-default.conf
           sudo apache2ctl configtest #check for config errors
           sudo systemctl restart apache2
+          sudo systemctl status apache2
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:

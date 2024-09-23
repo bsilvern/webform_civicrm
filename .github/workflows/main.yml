@@ -55,6 +55,26 @@ jobs:
       #     - 3306
       #   options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
+      - name: Install Apache web server
+        run: |
+          sudo apt update
+          sudo apt install apache2
+          sudo cat << 'EOF' > /etc/apache2/sites-available/simpletest.conf
+            <VirtualHost *:80>
+              ServerAdmin webmaster@localhost
+              ServerName 127.0.0.1:8080
+              #ServerAlias www.your_domain
+              DocumentRoot /home/runner/drupal/web
+              ErrorLog ${APACHE_LOG_DIR}/error.log
+              CustomLog ${APACHE_LOG_DIR}/access.log combined
+              #User runner
+              #Group runner
+            </VirtualHost>
+          EOF
+          sudo a2ensite simpletest.conf
+          sudo a2dissite 000-default.conf
+          sudo apache2ctl configtest #check for config errors
+          sudo systemctl restart apache2
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
@@ -209,26 +229,6 @@ jobs:
           #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       # - name: Run php built-in server
       #   run: php -S 127.0.0.1:8080 -t ~/drupal/web &
-      - name: Install Apache web server
-        run: |
-          sudo apt update
-          sudo apt install apache2
-          cat << 'EOF' > /etc/apache2/sites-available/simpletest.conf
-            <VirtualHost *:80>
-              ServerAdmin webmaster@localhost
-              ServerName 127.0.0.1:8080
-              #ServerAlias www.your_domain
-              DocumentRoot /home/runner/drupal/web
-              ErrorLog ${APACHE_LOG_DIR}/error.log
-              CustomLog ${APACHE_LOG_DIR}/access.log combined
-              #User runner
-              #Group runner
-            </VirtualHost>
-          EOF
-          sudo a2ensite simpletest.conf
-          sudo a2dissite 000-default.conf
-          sudo apache2ctl configtest #check for config errors
-          sudo systemctl restart apache2
       - name: Patch Webdriver curl
         if: ${{ matrix.drupal != '10.3.*' }}
         run: |

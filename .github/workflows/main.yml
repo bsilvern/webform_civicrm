@@ -241,8 +241,7 @@ jobs:
             </VirtualHost>
           EOF
           sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
-          sudo echo 'export APACHE_RUN_USER=runner' >> /etc/apache2/envars
-          sudo echo 'export APACHE_RUN_GROUP=runner' >> /etc/apache2/envars
+          sudo bash -c 'echo -e \\nexport APACHE_RUN_USER=runner\\nexport APACHE_RUN_GROUP=runner\\n >> /etc/apache2/envvars'
           #sudo chown -R www-data:www-data /home/runner/drupal
           #sudo chmod -R 777 /home/runner/drupal
           sudo a2ensite simpletest.conf

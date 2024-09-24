@@ -46,7 +46,8 @@ jobs:
           - 3306
         # tmpfs:
         #   - /var/lib/mysql
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --datadir=/sys/firmware/mysql/
+        command: --datadir=/sys/firmware/mysql/
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 #--datadir=/sys/firmware/mysql/
       # mysql:
       #   #image: mysql:8.0
       #   image: mariadb:11.4

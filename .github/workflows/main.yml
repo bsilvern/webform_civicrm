@@ -282,7 +282,7 @@ jobs:
       #     cat /var/log/apache2/error.log
       #     cat /var/log/apache2/access.log
       - name: Patch Mink loop delay
-        run: sed -Eie 's/usleep\(10000\)/usleep(100000)/' ../vendor/behat/mink/src/Element/Element.php
+        run: sed -Eie 's/usleep\(10000\)/usleep(100000)/' ~/drupal/vendor/behat/mink/src/Element/Element.php
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY

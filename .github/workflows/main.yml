@@ -66,8 +66,8 @@ jobs:
           env
       - name: Create MySQL Docker container
         run: |
-          #--network github_network_c13431944d9646ccabc39d87f489e64d --network-alias mysql
-          /usr/bin/docker create --name mysql_${{ strategy.job-index }} -p 3306 --network ${{ job.container.network }} --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
+          #--network github_network_c13431944d9646ccabc39d87f489e64d --network-alias mysql    --network ${{ job.container.network }} --job.container.id ${{ job.container.id }} --job.services.<service_id>.network  job.services.${{ job.container.id }}.network
+          /usr/bin/docker create --name mysql_${{ strategy.job-index }} -p 3306 --network host --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
           /usr/bin/docker start mysql_${{ strategy.job-index }}
           /usr/bin/docker ps --all --filter id=mysql_${{ strategy.job-index }} --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
           /usr/bin/docker port mysql_${{ strategy.job-index }}

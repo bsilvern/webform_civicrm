@@ -130,6 +130,12 @@ jobs:
           composer config repositories.1 path $GITHUB_WORKSPACE
           composer install --no-interaction
           COMPOSER_MEMORY_LIMIT=-1 composer require drupal/core-dev-pinned:${{ matrix.drupal }}
+      - name: Setup Ping Diagnostics
+        run: |
+          mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log
+          ping github.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log &
+          ping google.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_google.log &
+          ping localhost > /home/runner/drupal/web/sites/simpletest/browser_output/ping_localhost.log &
       - name: Suppress links to screenshots
         # There's so many! They can be useful locally if running one test, but they aren't useful here and cause massive scrolling.
         run: |
@@ -216,12 +222,15 @@ jobs:
       - name: Create BROWSERTEST_OUTPUT_DIRECTORY
         run: |
           mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/
+      - name: Install Xvfb
+        run: sudo apt-get install xvfb
       - name: Run chromedriver
         run: |
-          chromedriver --port=9515 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
-          #export DISPLAY=:99
+          #chromedriver --port=9515 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+          chromedriver --port=4445 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
           #chromedriver --url-base=/wd/hub &
-          #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       # - name: Run php built-in server
       #   #run: php -S 127.0.0.1:8080 -t ~/drupal/web &
       #   run: PHP_CLI_SERVER_WORKERS=32 php -S 127.0.0.1:8080 -t ~/drupal/web &
@@ -286,9 +295,6 @@ jobs:
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
-          ping github.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log &
-          ping google.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_google.log &
-          ping localhost > /home/runner/drupal/web/sites/simpletest/browser_output/ping_localhost.log &
           cd ~/drupal/web
           ../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
           #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/ExistingContactElementTest.php 
@@ -297,7 +303,8 @@ jobs:
           SYMFONY_DEPRECATIONS_HELPER: 999999
           SIMPLETEST_DB: mysql://root:@127.0.0.1:${{ job.services.mysql.ports[3306] }}/db
           SIMPLETEST_BASE_URL: http://127.0.0.1:8080
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
+          #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4445"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless=new", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext

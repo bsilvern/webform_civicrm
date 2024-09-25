@@ -286,6 +286,8 @@ jobs:
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
+          ping github.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log &
+          ping localhost > /home/runner/drupal/web/sites/simpletest/browser_output/ping_localhost.log &
           cd ~/drupal/web
           ../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
           #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/ExistingContactElementTest.php 

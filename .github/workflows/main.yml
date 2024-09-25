@@ -36,15 +36,15 @@ jobs:
             civicrm: 'dev-master'
             php: '8.3'
     name: Drupal ${{ matrix.drupal }} | CiviCRM ${{ matrix.civicrm }}
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: db
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql --skip-log-bin
+    # services:
+    #   mysql:
+    #     image: mysql:8.0
+    #     env:
+    #       MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    #       MYSQL_DATABASE: db
+    #     ports:
+    #       - 3306
+    #     options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql --skip-log-bin
       # mysql:
       #   #image: mysql:8.0
       #   image: mariadb:11.4
@@ -64,6 +64,8 @@ jobs:
           touch test1
           ls -al .
           env
+      - name: Create MySQL Docker container
+        run: /usr/bin/docker create --label 8bac9a --network github_network_c13431944d9646ccabc39d87f489e64d --network-alias mysql -p 3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:

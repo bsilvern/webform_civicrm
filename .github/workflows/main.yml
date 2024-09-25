@@ -36,9 +36,6 @@ jobs:
             civicrm: 'dev-master'
             php: '8.3'
     name: Drupal ${{ matrix.drupal }} | CiviCRM ${{ matrix.civicrm }}
-    steps: 
-      - name: Setup Mysql Config
-        run: echo -e "\n[mysqld]\ndisable_log_bin\n" >> /tmp/my.cnf
     services:
       mysql:
         image: mysql:8.0
@@ -47,7 +44,7 @@ jobs:
           MYSQL_DATABASE: db
         ports:
           - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -v /tmp/my.cnf:/etc/mysql/my.cnf
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql --skip-log-bin
       # mysql:
       #   #image: mysql:8.0
       #   image: mariadb:11.4

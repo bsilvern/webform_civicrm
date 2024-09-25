@@ -287,6 +287,7 @@ jobs:
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
           ping github.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log &
+          ping google.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_google.log &
           ping localhost > /home/runner/drupal/web/sites/simpletest/browser_output/ping_localhost.log &
           cd ~/drupal/web
           ../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm

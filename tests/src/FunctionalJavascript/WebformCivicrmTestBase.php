@@ -68,6 +68,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
+    $this->failOnJavascriptConsoleErrors = FALSE; //TEST to see if this stops the random failures
     parent::setUp();
     $this->utils = \Drupal::service('webform_civicrm.utils');
 

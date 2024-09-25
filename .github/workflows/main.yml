@@ -65,7 +65,11 @@ jobs:
           ls -al .
           env
       - name: Create MySQL Docker container
-        run: /usr/bin/docker create --label 8bac9a --network github_network_c13431944d9646ccabc39d87f489e64d --network-alias mysql -p 3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
+        run: |
+          /usr/bin/docker create --name ${{ matrix.drupal }}_${{ matrix.civicrm }} --network github_network_c13431944d9646ccabc39d87f489e64d --network-alias mysql -p 3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
+          /usr/bin/docker start ${{ matrix.drupal }}_${{ matrix.civicrm }}
+          /usr/bin/docker ps --all --filter id=${{ matrix.drupal }}_${{ matrix.civicrm }} --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+          /usr/bin/docker port ${{ matrix.drupal }}_${{ matrix.civicrm }}
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:

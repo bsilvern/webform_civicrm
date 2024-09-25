@@ -64,9 +64,8 @@ jobs:
           touch test1
           ls -al .
           env
-      - name: Create MySQL Docker container
+      - name: Create MySQL Docker container with ramdisk
         run: |
-          #--network github_network_c13431944d9646ccabc39d87f489e64d --network-alias mysql    --network ${{ job.container.network }} --job.container.id ${{ job.container.id }} --job.services.<service_id>.network  job.services.${{ job.container.id }}.network
           /usr/bin/docker create --name mysql_${{ strategy.job-index }} -p 3306 --network host --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
           /usr/bin/docker start mysql_${{ strategy.job-index }}
           /usr/bin/docker ps --all --filter id=mysql_${{ strategy.job-index }} --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
@@ -136,7 +135,7 @@ jobs:
           COMPOSER_MEMORY_LIMIT=-1 composer require drupal/core-dev-pinned:${{ matrix.drupal }}
       - name: Setup Ping Diagnostics
         run: |
-          mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log
+          mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/
           ping github.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log &
           ping google.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_google.log &
           ping localhost > /home/runner/drupal/web/sites/simpletest/browser_output/ping_localhost.log &

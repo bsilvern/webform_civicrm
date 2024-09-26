@@ -234,9 +234,8 @@ jobs:
           #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
           #sudo Xvfb -ac :99 -screen 0 1920x2048x24 > /dev/null 2>&1 & # optional
           chromedriver --port=4444 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
-      # - name: Run php built-in server
-      #   #run: php -S 127.0.0.1:8080 -t ~/drupal/web &
-      #   run: PHP_CLI_SERVER_WORKERS=32 php -S 127.0.0.1:8080 -t ~/drupal/web &
+      - name: Run php built-in server
+        run: PHP_CLI_SERVER_WORKERS=32 php -S 127.0.0.1:8080 -t ~/drupal/web &
       # - name: Patch Webdriver curl
       #   if: ${{ matrix.drupal != '10.3.*' }}
       #   run: |
@@ -253,46 +252,46 @@ jobs:
       #                      WebDriverException::NO_PARAMETERS_EXPECTED,
       #     EOF
       #     patch ~/drupal/vendor/instaclick/php-webdriver/lib/WebDriver/AbstractWebDriver.php /tmp/patch1 
-      - name: Install Apache web server
-        run: |
-          sudo apt update
-          sudo apt install apache2
-          cat << 'EOF' > /tmp/simpletest.conf
-            Listen 8080
-            <VirtualHost *:8080>
-              ServerAdmin webmaster@localhost
-              ServerName 127.0.0.1
-              #ServerAlias www.your_domain
-              DocumentRoot /home/runner/drupal/web
-              <Directory "/home/runner/drupal/web">
-                Options All
-                AllowOverride All
-                <IfModule mod_authz_host.c>
-                    Require all granted
-                </IfModule>
-              </Directory>
-              ErrorLog ${APACHE_LOG_DIR}/error.log
-              CustomLog ${APACHE_LOG_DIR}/access.log combined
-            </VirtualHost>
-          EOF
-          sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
-          sudo bash -c 'echo -e \\nexport APACHE_RUN_USER=runner\\nexport APACHE_RUN_GROUP=runner\\n >> /etc/apache2/envvars'
-          #sudo chown -R www-data:www-data /home/runner/drupal
-          #sudo chmod -R 777 /home/runner/drupal
-          sudo apt-get install libapache2-mod-php${{ matrix.php }}
-          sudo a2ensite simpletest.conf
-          sudo a2dissite 000-default.conf
-          sudo a2dismod "php*"
-          sudo a2enmod php${{ matrix.php }}
-          sudo apache2ctl configtest #check for config errors
-          sudo systemctl restart apache2
-          sudo systemctl status apache2
-          ps alx | grep apache
-          cd /tmp
-          wget http://127.0.0.1:8080 -O index1.php || echo 'wget http://127.0.0.1:8080 failed'
-          cat index1.php
-          cat /var/log/apache2/error.log
-          cat /var/log/apache2/access.log
+      # - name: Install Apache web server
+      #   run: |
+      #     sudo apt update
+      #     sudo apt install apache2
+      #     cat << 'EOF' > /tmp/simpletest.conf
+      #       Listen 8080
+      #       <VirtualHost *:8080>
+      #         ServerAdmin webmaster@localhost
+      #         ServerName 127.0.0.1
+      #         #ServerAlias www.your_domain
+      #         DocumentRoot /home/runner/drupal/web
+      #         <Directory "/home/runner/drupal/web">
+      #           Options All
+      #           AllowOverride All
+      #           <IfModule mod_authz_host.c>
+      #               Require all granted
+      #           </IfModule>
+      #         </Directory>
+      #         ErrorLog ${APACHE_LOG_DIR}/error.log
+      #         CustomLog ${APACHE_LOG_DIR}/access.log combined
+      #       </VirtualHost>
+      #     EOF
+      #     sudo mv /tmp/simpletest.conf /etc/apache2/sites-available/simpletest.conf
+      #     sudo bash -c 'echo -e \\nexport APACHE_RUN_USER=runner\\nexport APACHE_RUN_GROUP=runner\\n >> /etc/apache2/envvars'
+      #     #sudo chown -R www-data:www-data /home/runner/drupal
+      #     #sudo chmod -R 777 /home/runner/drupal
+      #     sudo apt-get install libapache2-mod-php${{ matrix.php }}
+      #     sudo a2ensite simpletest.conf
+      #     sudo a2dissite 000-default.conf
+      #     sudo a2dismod "php*"
+      #     sudo a2enmod php${{ matrix.php }}
+      #     sudo apache2ctl configtest #check for config errors
+      #     sudo systemctl restart apache2
+      #     sudo systemctl status apache2
+      #     ps alx | grep apache
+      #     cd /tmp
+      #     wget http://127.0.0.1:8080 -O index1.php || echo 'wget http://127.0.0.1:8080 failed'
+      #     cat index1.php
+      #     cat /var/log/apache2/error.log
+      #     cat /var/log/apache2/access.log
       # - name: Patch Mink loop delay
       #   run: sed -i -Ee 's/usleep\(10000\)/usleep(100000)/' ~/drupal/vendor/behat/mink/src/Element/Element.php
       - name: Run PHPUnit

@@ -293,8 +293,8 @@ jobs:
           cat index1.php
           cat /var/log/apache2/error.log
           cat /var/log/apache2/access.log
-      - name: Patch Mink loop delay
-        run: sed -i -Ee 's/usleep\(10000\)/usleep(100000)/' ~/drupal/vendor/behat/mink/src/Element/Element.php
+      # - name: Patch Mink loop delay
+      #   run: sed -i -Ee 's/usleep\(10000\)/usleep(100000)/' ~/drupal/vendor/behat/mink/src/Element/Element.php
       - name: Run PHPUnit
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
@@ -309,7 +309,7 @@ jobs:
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless=new", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--guest", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"], "prefs":{"autofill.profile_enabled":false,"credentials_enable_service":false,"profile.password_manager_enabled":false}}}, "http://127.0.0.1:4444"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--guest", "--enable-logging", "--log-level=3", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"], "prefs":{"autofill.profile_enabled":false,"credentials_enable_service":false,"profile.password_manager_enabled":false}}}, "http://127.0.0.1:4444"]'
 
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext

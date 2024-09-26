@@ -513,7 +513,8 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    * Set default value on webform element.
    */
   protected function setDefaultValue($selector, $value) {
-    $this->assertSession()->elementExists('css', "[data-drupal-selector='{$selector}'] a.webform-ajax-link")->click();
+    $test1 = $this->assertSession()->elementExists('css', "[data-drupal-selector='{$selector}'] a.webform-ajax-link")->click();
+    $this->assertSession()->elementExists('css', "[data-drupal-selector='{$selector}'] li.edit a.webform-ajax-link")->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
     $this->assertSession()->waitForElementVisible('xpath', '//a[contains(@id, "--advanced")]');
@@ -904,6 +905,10 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    *   submissions.
    */
   protected function getLastSubmissionId(WebformInterface $webform) {
+    // Intermittent failures here returing "" instead of the expected array of 1 integer
+    // Let's see if it helps to clear the cache.
+    drupal_flush_all_caches();
+
     $submission_ids = \Drupal::entityQuery('webform_submission')
       ->accessCheck(TRUE)
       ->condition('webform_id', $webform->id())

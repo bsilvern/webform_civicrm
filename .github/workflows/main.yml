@@ -205,17 +205,28 @@ jobs:
           # Apparently we have to install it, otherwise stripe gives a dependency error even with install=0. I think that's a bug, but let's just do it. This is a fake install anyway.
 
           # We frequently get "The CiviCRM public extensions directory at https://civicrm.org/extdir/ver=5.69.5|cms=Drupal8|ready= could not be contacted",
-          # So we'll retry try eachh extension download several times before giving up
-          function retry_if_fail () {
-            local command="${@}"
-            for ((n=3; n>0; n--)); do
+          # So we'll retry try each extension download several times before giving up
+          function retry_if_fail {
+            local command="$@"
+            local max_retries=3
+            local delay=30
+            local retry_count=0
+            while (( retry_count < max_retries )); do
+              set +e
               $command
-              if [[ $? == 0 ]]; then
-                break
+              retval=$?
+              set -e 
+              if [[ $retval -eq 0 ]]; then
+                return 0
               fi
-              sleep 30
+              (( ++retry_count ))
+              if [[ $retry_count -lt $max_retries ]]; then
+                echo "Download failed with $n tries remaining."
+                sleep "$delay"
+              fi
             done
-            [[ $n == 0 ]] && echo "Failed to download extenion!" && exit 1
+            echo "Download failed all attempts!"
+            return 1
           }
 
           retry_if_fail /home/runner/civicrm-cv/cv api3 Extension.download install=1 key=mjwshared

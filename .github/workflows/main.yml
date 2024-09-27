@@ -137,9 +137,11 @@ jobs:
         run: |
           mkdir -p /home/runner/drupal/web/sites/simpletest/browser_output/
           ping github.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_github.log &
-          ping google.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_google.log &
           ping localhost > /home/runner/drupal/web/sites/simpletest/browser_output/ping_localhost.log &
+          ping google.com > /home/runner/drupal/web/sites/simpletest/browser_output/ping_google.log &
           /usr/bin/docker ps -a
+          uname -a
+          df -h
       - name: Suppress links to screenshots
         # There's so many! They can be useful locally if running one test, but they aren't useful here and cause massive scrolling.
         run: |
@@ -204,18 +206,15 @@ jobs:
           /home/runner/civicrm-cv/cv ev '\Civi::settings()->set("http_timeout", 60);'
           # Apparently we have to install it, otherwise stripe gives a dependency error even with install=0. I think that's a bug, but let's just do it. This is a fake install anyway.
 
-          # We frequently get "The CiviCRM public extensions directory at https://civicrm.org/extdir/ver=5.69.5|cms=Drupal8|ready= could not be contacted",
-          # So we'll retry try each extension download several times before giving up
+          # We frequently get "The CiviCRM public extensions directory at https://civicrm.org/extdir/[..] could not be contacted",
+          # so retry try each extension download several times before giving up.
           function retry_if_fail {
             local command="$@"
-            local max_retries=3
+            local max_retries=4
             local delay=30
             local retry_count=0
             while (( retry_count < max_retries )); do
-              set +e
-              $command
-              retval=$?
-              set -e 
+              set +e; $command; retval=$?; set -e
               if [[ $retval -eq 0 ]]; then
                 return 0
               fi
@@ -335,7 +334,8 @@ jobs:
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless=new", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=3", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"], "prefs":{"autofill.profile_enabled":false,"credentials_enable_service":false,"profile.password_manager_enabled":false}}}, "http://127.0.0.1:4444"]'
+          #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=3", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"], "prefs":{"autofill.profile_enabled":false,"credentials_enable_service":false,"profile.password_manager_enabled":false}}}, "http://127.0.0.1:4444"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=0", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext
           DEV_EXTENSION_URL: http://127.0.0.1:8080/sites/default/files/civicrm/ext

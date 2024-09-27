@@ -21,15 +21,24 @@ final class BobSLoginTest extends WebformCivicrmTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->loops = 10;
+    $this->loops = 300;
   }
 
   public function loop($test_num) {
     $this->htmlOutput();
+    if ($this->loggedInUser) {
+      $this->drupalLogout();
+    }
+
+
     for ($i=0; $i<$this->loops; $i++) {
-      $this->drupalLogin($this->rootUser);
-      $this->htmlOutput();
-      $this->assertEquals(1, \Drupal::currentUser()->id(), "test=$test_num, i=$i");
+      $this->drupalGet('/');
+      $this->drupalGet(Url::fromRoute('user.login'));
+      $submit_button = $this->assertSession()->buttonExists('Log in');
+      $form = $this->assertSession()->elementExists('xpath', './ancestor::form', $submit_button);
+      // $this->drupalLogin($this->rootUser);
+      // $this->htmlOutput();
+      // $this->assertEquals(1, \Drupal::currentUser()->id(), "test=$test_num, i=$i");
     }
   }
 

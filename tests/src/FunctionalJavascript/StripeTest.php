@@ -121,9 +121,9 @@ final class StripeTest extends WebformCivicrmTestBase {
     $stripeCardElement = $this->assertSession()->waitForElementVisible('xpath', '//div[contains(@class, "StripeElement")]/div/iframe');
     $this->assertNotEmpty($stripeCardElement);
     $this->getSession()->switchToIFrame($stripeCardElement->getAttribute('name'));
-    $this->getSession()->wait(3000);
-
+    $this->getSession()->wait(5000);
     $this->assertSession()->waitForElementVisible('css', 'input[name="cardnumber"]');
+    $this->htmlOutput();
     $this->getSession()->getPage()->fillField('cardnumber', '4111 1111 1111 1111');
 
     // Chromedriver 127.0.6533.119 bug: SendKey('/') is interpreted as a pageUp

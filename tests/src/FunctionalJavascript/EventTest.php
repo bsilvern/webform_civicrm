@@ -139,8 +139,8 @@ final class EventTest extends WebformCivicrmTestBase {
     $this->assertSession()->elementTextContains('css', '#wf-crm-billing-total', '40.00');
 
     $this->getSession()->getPage()->pressButton('Submit');
-    $this->assertPageNoErrorMessages();
     $this->htmlOutput();
+    $this->assertPageNoErrorMessages();
 
     $contactRef = $this->utils->wf_civicrm_api('Contact', 'get', [
       'first_name' => 'Mark',

@@ -206,7 +206,7 @@ jobs:
 
           # We frequently get "The CiviCRM public extensions directory at https://civicrm.org/extdir/ver=5.69.5|cms=Drupal8|ready= could not be contacted",
           # So we'll retry try eachh extension download several times before giving up
-          function retry_if_fail ()
+          function retry_if_fail () {
             local command="${@}"
             for ((n=3; n>0; n--)); do
               $command
@@ -217,7 +217,7 @@ jobs:
             done
             [[ $n == 0 ]] && echo "Failed to download extenion!" && exit 1
           }
-          
+
           retry_if_fail /home/runner/civicrm-cv/cv api3 Extension.download install=1 key=mjwshared
           retry_if_fail /home/runner/civicrm-cv/cv api3 Extension.download install=1 key=firewall
           retry_if_fail /home/runner/civicrm-cv/cv api3 Extension.download install=1 key=mjwpaymentapi

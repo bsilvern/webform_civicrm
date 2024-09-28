@@ -256,9 +256,9 @@ jobs:
       - name: Run chromedriver
         run: |
           #chromedriver --port=9515 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
-          #export DISPLAY=:99
-          #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-          #sudo Xvfb -ac :99 -screen 0 1920x2048x24 > /dev/null 2>&1 & # optional
+          export DISPLAY=:99
+          #sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          sudo Xvfb -ac :99 -screen 0 1920x2048x24 > /dev/null 2>&1 &
           chromedriver --port=4444 --verbose &> /home/runner/drupal/web/sites/simpletest/browser_output/chromedriver.log &
       - name: Run php built-in server
         run: PHP_CLI_SERVER_WORKERS=32 php -S 127.0.0.1:8080 -t ~/drupal/web &
@@ -338,7 +338,7 @@ jobs:
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=3", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"], "prefs":{"autofill.profile_enabled":false,"credentials_enable_service":false,"profile.password_manager_enabled":false}}}, "http://127.0.0.1:4444"]'
           #Chrome log OK: MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless=new", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=8", "--log-file=/tmp/chrome.log"]}}, "http://127.0.0.1:4444"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headlessX", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=8", "--log-file=/tmp/chrome.log"]}}, "http://127.0.0.1:4444"]'
           #--dns-prefetch-disable: used by Token module
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext
@@ -351,10 +351,6 @@ jobs:
           echo '${{ matrix.drupal }}_${{ matrix.civicrm }}_${{ matrix.php }}' > upload_helper.txt
           sed -i -e 's/[^0-9a-zA-Z_.\-]//g' upload_helper.txt
           echo "UPLOADNAME=$(cat upload_helper.txt)" >> $GITHUB_ENV
-
-          ls -al /tmp/chrome.log
-          chown runner /tmp/chrome.log
-          cp /tmp/chrome.log /home/runner/drupal/web/sites/simpletest/browser_output/
       - uses: actions/upload-artifact@v4
         if: ${{ failure() || success() }}
         with:

@@ -64,7 +64,7 @@ jobs:
           touch test1
           ls -al .
           env
-      - name: Create MySQL Docker container with ramdisk
+      - name: Create MySQL Docker container with data in RAM
         run: |
           /usr/bin/docker create --name mysql_${{ strategy.job-index }} -p 3306 --network host --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 --tmpfs /var/lib/mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=db" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0 --skip-log-bin
           /usr/bin/docker start mysql_${{ strategy.job-index }}
@@ -325,8 +325,9 @@ jobs:
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
           cd ~/drupal/web
           #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
+          ../vendor/bin/phpunit --verbose --stop-on-error --stop-on-failure -c core modules/contrib/webform_civicrm
           #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/ExistingContactElementTest.php 
-          ../vendor/bin/phpunit --debug --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/BobSLoginTest.php
+          #../vendor/bin/phpunit --debug --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/BobSLoginTest.php
         env:
           SYMFONY_DEPRECATIONS_HELPER: 999999
           SIMPLETEST_DB: mysql://root:@127.0.0.1:${{ job.services.mysql.ports[3306] }}/db
@@ -335,7 +336,9 @@ jobs:
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless=new", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
           #MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=3", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"], "prefs":{"autofill.profile_enabled":false,"credentials_enable_service":false,"profile.password_manager_enabled":false}}}, "http://127.0.0.1:4444"]'
-          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usageX", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=0", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
+          #Chrome log OK: MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu", "--no-sandbox", "--headless=new", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:9515"]'
+          MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--headless", "--guest", "--remote-debugging-pipe", "--enable-logging", "--log-level=8", "--log-file=/home/runner/drupal/web/sites/simpletest/browser_output/chrome.log"]}}, "http://127.0.0.1:4444"]'
+          #--dns-prefetch-disable: used by Token module
           BROWSERTEST_OUTPUT_DIRECTORY: '/home/runner/drupal/web/sites/simpletest/browser_output'
           DEV_EXTENSION_DIR: /home/runner/drupal/web/sites/default/files/civicrm/ext
           DEV_EXTENSION_URL: http://127.0.0.1:8080/sites/default/files/civicrm/ext

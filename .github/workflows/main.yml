@@ -220,7 +220,7 @@ jobs:
               fi
               (( ++retry_count ))
               if [[ $retry_count -lt $max_retries ]]; then
-                echo "Download failed with $n tries remaining."
+                echo "Download failed attempt #$retry_count."
                 sleep "$delay"
               fi
             done

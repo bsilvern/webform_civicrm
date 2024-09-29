@@ -188,6 +188,7 @@ final class ActivitySubmissionTest extends WebformCivicrmTestBase {
     }
 
     // Ok now let's log back in and retrieve the Activity we just stored - so that we can update it.
+    drupal_flush_all_caches(); //BobS Trying to solve Parameter "webform_submission" for route "entity.webform_submission.canonical" must match "[^/]++" ("" given) to generate a corresponding URL.
     $this->drupalLogin($this->adminUser);
     $sid = $this->getLastSubmissionId($this->webform);
     $this->drupalGet(Url::fromRoute('entity.webform_submission.canonical', [

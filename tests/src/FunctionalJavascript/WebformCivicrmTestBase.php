@@ -68,9 +68,9 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    $this->failOnJavascriptConsoleErrors = FALSE; //TEST to see if this stops the random failures
+    //$this->failOnJavascriptConsoleErrors = FALSE; //TEST to see if this stops the random failures
     parent::setUp();
-    $this->failOnJavascriptConsoleErrors = FALSE; //TEST to see if this stops the random failures
+    //$this->failOnJavascriptConsoleErrors = FALSE; //TEST to see if this stops the random failures
     $this->utils = \Drupal::service('webform_civicrm.utils');
 
     // Make sure we are using distinct default and administrative themes for
@@ -907,7 +907,11 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
   protected function getLastSubmissionId(WebformInterface $webform) {
     // Intermittent failures here returing "" instead of the expected array of 1 integer
     // Let's see if it helps to clear the cache.
-    drupal_flush_all_caches();
+    //drupal_flush_all_caches();
+    $user_id = \Drupal::currentUser()->id();
+    $this->assertEquals(2, $user_id, "Current user_id");
+    $user_has_admin_permission = \Drupal::currentUser()->hasPermission('administer webform'); //'administer webform submission' 'view any webform submission'
+    $this->assertEquals(true, $user_has_admin_permission, "User has admin permission");
 
     $submission_ids = \Drupal::entityQuery('webform_submission')
       ->accessCheck(TRUE)

@@ -188,8 +188,17 @@ final class ActivitySubmissionTest extends WebformCivicrmTestBase {
     }
 
     // Ok now let's log back in and retrieve the Activity we just stored - so that we can update it.
-    drupal_flush_all_caches(); //BobS Trying to solve Parameter "webform_submission" for route "entity.webform_submission.canonical" must match "[^/]++" ("" given) to generate a corresponding URL.
+    // $user0 = \Drupal::currentUser();
+    // $user0l = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+    // $x = drupal_flush_all_caches(); //BobS Trying to solve Parameter "webform_submission" for route "entity.webform_submission.canonical" must match "[^/]++" ("" given) to generate a corresponding URL. But clearing the cache sets the CurrentUser to 0!
+    // $user1 = \Drupal::currentUser();
     $this->drupalLogin($this->adminUser);
+    //$user2 = \Drupal::currentUser()->getAccount();
+    // $x = drupal_flush_all_caches();
+    // $p1 = $this->adminUser->hasPermission('administer webform'); //'administer webform submission' 'view any webform submission'
+    //$account = \Drupal::currentUser()->getAccount();
+
+
     $sid = $this->getLastSubmissionId($this->webform);
     $this->drupalGet(Url::fromRoute('entity.webform_submission.canonical', [
       'webform' => $this->webform->id(),

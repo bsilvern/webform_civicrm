@@ -324,8 +324,8 @@ jobs:
         run: |
           mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
           cd ~/drupal/web
-          #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
-          ../vendor/bin/phpunit --verbose --stop-on-error --stop-on-failure -c core modules/contrib/webform_civicrm
+          ../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm
+          #../vendor/bin/phpunit --verbose --stop-on-error --stop-on-failure -c core modules/contrib/webform_civicrm
           #../vendor/bin/phpunit --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/ExistingContactElementTest.php 
           #../vendor/bin/phpunit --debug --verbose -c core modules/contrib/webform_civicrm/tests/src/FunctionalJavascript/BobSLoginTest.php
         env:

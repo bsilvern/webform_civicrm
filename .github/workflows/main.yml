@@ -351,11 +351,11 @@ jobs:
           echo '${{ matrix.drupal }}_${{ matrix.civicrm }}_${{ matrix.php }}' > upload_helper.txt
           sed -i -e 's/[^0-9a-zA-Z_.\-]//g' upload_helper.txt
           echo "UPLOADNAME=$(cat upload_helper.txt)" >> $GITHUB_ENV
+          cp /var/log/apache2/* /home/runner/drupal/web/sites/simpletest/browser_output
       - uses: actions/upload-artifact@v4
         if: ${{ failure() || success() }}
         with:
           name: screenshots.${{ env.UPLOADNAME }}
           # For some reason Drupal prints here and not our specified BROWSERTEST_OUTPUT_DIRECTORY.
           path: '/home/runner/drupal/web/sites/simpletest/browser_output'
-          path: /var/log/apache2/
           retention-days: 7

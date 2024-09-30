@@ -419,7 +419,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->drupalLogout();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
-    this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->selectFieldOption('civicrm_2_contact_1_contact_existing', 'Default Organization');
 

@@ -40,6 +40,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->assertSession()->pageTextNotContains('contact_pagebreak');
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
@@ -115,6 +117,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->drupalLogout();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $countryID = $this->utils->wf_civicrm_api4('Country', 'get', [
       'where' => [
@@ -147,6 +151,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->wait(1000);
     $this->getSession()->getPage()->selectFieldOption('State/Province', $billingValues['state_province_id']);
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '10.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
@@ -233,6 +238,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('canonical',  ['query' => ['cid2' => $cid2]]));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->assertSession()->waitForField('First Name');
@@ -249,14 +256,32 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->assertFieldValue('edit-civicrm-2-contact-1-contact-last-name', 'Cooper');
     $this->addFieldValue('civicrm_2_contact_1_contact_first_name', 'MarkUpdated');
     $this->addFieldValue('civicrm_2_contact_1_contact_last_name', 'CooperUpdated');
-    $this->getSession()->getPage()->pressButton('Next >');
 
-    $this->assertSession()->waitForElement('css', '#edit-wizard-prev');
-    $this->getSession()->getPage()->pressButton('edit-wizard-prev');
-    $this->assertSession()->waitForField('edit-civicrm-2-contact-1-contact-first-name');
+    #"form > div:nth-child(6) > #edit-wizard-next"
+    $b0 = $this->getSession()->getPage()->pressButton('Next >');
+
+    // The following commonly times out with the default 10 second timout, so increasing it to 30 seconds
+    //$t0 = $this->assertSession()->waitForElement('css', '#edit-wizard-prev', 30000);
+    //$this->assertSession()->assertWaitOnAjaxRequest();
+    //$t0a = $this->assertSession()->waitForElementVisible('css', '#edit-wizard-prev');
+    // The following button press is commonly/randomly ignored. Cause is TBD, but adding delay for now
+    //sleep (1);
+    //$this->getSession()->getPage()->getContent();
+
+    //$t0 = $this->assertSession()->waitForElement('css', 'form > div:nth-of-type(4) > #edit-wizard-prev')->click();
+
+
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
+    $t0 = $this->assertSession()->waitForElement('css', '#edit-wizard-prev');
+    $b1 = $this->getSession()->getPage()->pressButton('edit-wizard-prev');
+    $c = $this->waitForLoadComplete();
+    
+    $t1 = $this->assertSession()->waitForField('edit-civicrm-2-contact-1-contact-first-name');
     $this->assertFieldValue('edit-civicrm-2-contact-1-contact-first-name', 'MarkUpdated');
     $this->assertFieldValue('edit-civicrm-2-contact-1-contact-last-name', 'CooperUpdated');
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '10.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
@@ -397,6 +422,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->drupalLogout();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->selectFieldOption('civicrm_2_contact_1_contact_existing', 'Default Organization');
 
@@ -405,6 +432,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
     $this->getSession()->getPage()->fillField('Contribution Amount', '1');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
     $this->htmlOutput();
@@ -444,12 +472,15 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
     $this->getSession()->getPage()->fillField('Contribution Amount', '1200.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
     $this->htmlOutput();
@@ -513,6 +544,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -526,6 +559,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->htmlOutput();
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
     $this->htmlOutput();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '11.00');
@@ -583,6 +617,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -594,6 +630,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('civicrm_2_contact_1_contact_last_name', 'Plank');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
     $this->htmlOutput();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '11.00');
@@ -674,6 +711,8 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical'));
+    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
+    $c = $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -686,6 +725,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('civicrm_2_contact_1_email_email', 'maxplank@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $c = $this->waitForLoadComplete();
     $this->getSession()->getPage()->selectFieldOption('edit-civicrm-1-contribution-1-contribution-contact-id', 2);
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '10.00');

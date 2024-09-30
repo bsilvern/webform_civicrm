@@ -34,6 +34,7 @@ final class ContributionSoftTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -45,6 +46,7 @@ final class ContributionSoftTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('civicrm_2_contact_1_contact_last_name', 'Plank');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('Contribution Amount', '20');
 

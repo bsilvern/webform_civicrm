@@ -369,8 +369,10 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
   protected function editCivicrmOptionElement($selector, $multiple = TRUE, $enableStatic = FALSE, $default = NULL, $type = NULL, $singleOption = FALSE, $asList = FALSE) {
     $checkbox_edit_button = $this->assertSession()->elementExists('css', '[data-drupal-selector="' . $selector . '"] a.webform-ajax-link');
     $checkbox_edit_button->click();
-    $this->assertSession()->waitForField('drupal-off-canvas'); //doesn't exist?
     $this->assertSession()->assertWaitOnAjaxRequest();
+    //$this->assertSession()->waitForField('drupal-off-canvas'); //doesn't exist?
+    $this->waitForLoadComplete(); // Test
+    $this->assertSession()->waitForElement('css', '#drupal-off-canvas');
     $this->htmlOutput();
     if ($type) {
       $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-change-type"]')->click();
@@ -404,6 +406,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
         $this->htmlOutput();
       }
       else {
+        //$this->waitForLoadComplete(); // Test
         $this->getSession()->getPage()->uncheckField('properties[extra][aslist]');
         $this->assertSession()->checkboxNotChecked('properties[extra][aslist]');
         $this->htmlOutput();
@@ -933,11 +936,18 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     return 'credit_card_exp_date[m]';
   }
 
+  /**
+   * Wait for document.readyState === "complete".
+   * 
+   * It is important to call this after each load of a contribution
+   * page (including Prev/Next) because webform_civicrm_payment.js
+   * moves #edit-actions on each page load during
+   * document.readyState === "interactive". If this function is not
+   * called prior to clicking Next/Prev/Submit, then that click may
+   * fail.
+   */
 
   protected function waitForLoadComplete() {
-    // $condition = <<<JS
-    //   return document.readyState === "complete";
-    // JS;
     usleep(50000);
     return $this->getSession()->wait(10000, 'document.readyState === "complete"');
   }

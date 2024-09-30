@@ -40,8 +40,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->assertSession()->pageTextNotContains('contact_pagebreak');
 
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
@@ -117,8 +116,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->drupalLogout();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $countryID = $this->utils->wf_civicrm_api4('Country', 'get', [
       'where' => [
@@ -151,7 +149,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->wait(1000);
     $this->getSession()->getPage()->selectFieldOption('State/Province', $billingValues['state_province_id']);
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '10.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
@@ -238,8 +236,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('canonical',  ['query' => ['cid2' => $cid2]]));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->assertSession()->waitForField('First Name');
@@ -281,7 +278,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->assertFieldValue('edit-civicrm-2-contact-1-contact-first-name', 'MarkUpdated');
     $this->assertFieldValue('edit-civicrm-2-contact-1-contact-last-name', 'CooperUpdated');
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '10.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
@@ -422,8 +419,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->drupalLogout();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->selectFieldOption('civicrm_2_contact_1_contact_existing', 'Default Organization');
 
@@ -432,7 +428,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->getSession()->getPage()->fillField('Contribution Amount', '1');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
     $this->htmlOutput();
@@ -472,15 +468,14 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->getSession()->getPage()->fillField('Contribution Amount', '1200.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
     $this->htmlOutput();
@@ -544,8 +539,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -559,7 +553,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->htmlOutput();
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->htmlOutput();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '11.00');
@@ -617,8 +611,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -630,7 +623,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('civicrm_2_contact_1_contact_last_name', 'Plank');
 
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->htmlOutput();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '11.00');
@@ -711,8 +704,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
 
     $this->drupalLogout();
     $this->drupalGet($this->webform->toUrl('canonical'));
-    // Wait for webform_civicrm_payment.js to finish moving #edit-actions
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
 
     $this->getSession()->getPage()->fillField('civicrm_1_contact_1_contact_first_name', 'Frederick');
@@ -725,7 +717,7 @@ final class ContributionDummyTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('civicrm_2_contact_1_email_email', 'maxplank@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
-    $c = $this->waitForLoadComplete();
+    $this->waitForLoadComplete();
     $this->getSession()->getPage()->selectFieldOption('edit-civicrm-1-contribution-1-contribution-contact-id', 2);
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '10.00');

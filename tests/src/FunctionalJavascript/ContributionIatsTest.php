@@ -249,6 +249,7 @@ final class ContributionIatsTest extends WebformCivicrmTestBase {
    */
   public function submitWebForm() {
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
@@ -257,6 +258,7 @@ final class ContributionIatsTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->fillField('Line Item Amount 2', '5.00');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
     $this->assertSession()->waitForField('Contribution Amount');
     $this->getSession()->getPage()->fillField('Contribution Amount', '3.00');
     $this->assertSession()->elementExists('css', '#wf-crm-billing-items');
@@ -403,12 +405,14 @@ final class ContributionIatsTest extends WebformCivicrmTestBase {
     $this->assertSession()->pageTextContains('Saved CiviCRM settings');
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '99.00');
 
@@ -483,12 +487,14 @@ final class ContributionIatsTest extends WebformCivicrmTestBase {
 
     // Test 1: $120 -> paid in 12 instalments -> $10/month
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '120.00');
     $this->getSession()->getPage()->fillField('Number of Installments', '12.00');
@@ -549,12 +555,14 @@ final class ContributionIatsTest extends WebformCivicrmTestBase {
 
     // Test 2: $120 -> paid monthly -> $120/month
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
 
     $this->getSession()->getPage()->fillField('Contribution Amount', '120.00');
     $this->getSession()->getPage()->fillField('Number of Installments', '0');

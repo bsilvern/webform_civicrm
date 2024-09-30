@@ -55,12 +55,14 @@ final class ContributionPayLaterTest extends WebformCivicrmTestBase {
     $this->saveCiviCRMSettings();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
     $this->getSession()->getPage()->fillField('Email', 'fred@example.com');
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('Contribution Amount', '30');
 
@@ -184,6 +186,7 @@ final class ContributionPayLaterTest extends WebformCivicrmTestBase {
    */
   protected function submitWebform($amountType) {
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Frederick');
     $this->getSession()->getPage()->fillField('Last Name', 'Pabst');
@@ -193,6 +196,7 @@ final class ContributionPayLaterTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->selectFieldOption('State/Province', $this->state);
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
     $this->assertSession()->waitForField('civicrm_1_contribution_1_contribution_total_amount');
     $this->assertPageNoErrorMessages();
 
@@ -311,7 +315,8 @@ final class ContributionPayLaterTest extends WebformCivicrmTestBase {
 
     $checkbox_edit_button = $this->assertSession()->elementExists('css', '[data-drupal-selector="edit-webform-ui-elements-civicrm-1-contribution-1-contribution-total-amount-operations"] a.webform-ajax-link');
     $checkbox_edit_button->click();
-    $this->assertSession()->waitForField('drupal-off-canvas');
+    //$this->assertSession()->waitForField('drupal-off-canvas');
+    $this->assertSession()->waitForElement('css', '#drupal-off-canvas'); //TBD
     $this->htmlOutput();
 
     if ($changeTypeToOption) {
@@ -394,6 +399,7 @@ final class ContributionPayLaterTest extends WebformCivicrmTestBase {
     $this->drupalLogout();
 
     $this->drupalGet($this->webform->toUrl('canonical'));
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('First Name', 'Mei');
     $this->getSession()->getPage()->fillField('Last Name', 'Parker');
@@ -406,6 +412,7 @@ final class ContributionPayLaterTest extends WebformCivicrmTestBase {
     $this->getSession()->getPage()->selectFieldOption("civicrm_1_contact_1_contact_gender_id", $femaleID);
 
     $this->getSession()->getPage()->pressButton('Next >');
+    $this->waitForLoadComplete();
     $this->assertPageNoErrorMessages();
     $this->getSession()->getPage()->fillField('Contribution Amount', '20');
 

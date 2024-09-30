@@ -198,6 +198,11 @@ final class ActivitySubmissionTest extends WebformCivicrmTestBase {
     // $p1 = $this->adminUser->hasPermission('administer webform'); //'administer webform submission' 'view any webform submission'
     //$account = \Drupal::currentUser()->getAccount();
 
+    // Seem to have frequent trouble here with the above login. 
+    $user_id = \Drupal::currentUser()->id();
+    $this->assertEquals(2, $user_id, "Current user_id");
+    $user_has_admin_permission = \Drupal::currentUser()->hasPermission('administer webform'); //'administer webform submission' 'view any webform submission'
+    $this->assertEquals(true, $user_has_admin_permission, "User has admin permission");
 
     $sid = $this->getLastSubmissionId($this->webform);
     $this->drupalGet(Url::fromRoute('entity.webform_submission.canonical', [

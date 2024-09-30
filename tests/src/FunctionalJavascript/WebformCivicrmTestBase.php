@@ -909,16 +909,16 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
    */
   protected function getLastSubmissionId(WebformInterface $webform) {
     // Intermittent failures here returing "" instead of the expected array of 1 integer
-    // Let's see if it helps to clear the cache.
-    drupal_flush_all_caches();
+    // Let's see if it helps to clear the cache. Nope.
+    //drupal_flush_all_caches();
     $user_id = \Drupal::currentUser()->id();
     //$this->assertEquals(2, $user_id, "Current user_id");
     $user_has_admin_permission = \Drupal::currentUser()->hasPermission('administer webform'); //'administer webform submission' 'view any webform submission'
     //$this->assertEquals(true, $user_has_admin_permission, "User has admin permission");
 
     $submission_ids = \Drupal::entityQuery('webform_submission')
-      //->accessCheck(TRUE)
-      ->accessCheck(FALSE) //BobS: Suspect we are sometimes arriving here with uid 0, causing this function to return false
+      ->accessCheck(TRUE)
+      //->accessCheck(FALSE) //BobS: Suspect we are sometimes arriving here with uid 0, causing this function to return false. NG, still have random "Parameter "webform_submission" for route "entity.webform_submission.canonical" must match "[^/]++" ("" given) to generate a corresponding URL"
       ->condition('webform_id', $webform->id())
       ->sort('created', 'DESC')
       ->range(0, 1)

@@ -369,7 +369,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
   protected function editCivicrmOptionElement($selector, $multiple = TRUE, $enableStatic = FALSE, $default = NULL, $type = NULL, $singleOption = FALSE, $asList = FALSE) {
     $checkbox_edit_button = $this->assertSession()->elementExists('css', '[data-drupal-selector="' . $selector . '"] a.webform-ajax-link');
     $checkbox_edit_button->click();
-    $this->assertSession()->waitForField('drupal-off-canvas');
+    $this->assertSession()->waitForField('drupal-off-canvas'); //doesn't exist?
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->htmlOutput();
     if ($type) {
@@ -907,7 +907,7 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
   protected function getLastSubmissionId(WebformInterface $webform) {
     // Intermittent failures here returing "" instead of the expected array of 1 integer
     // Let's see if it helps to clear the cache.
-    //drupal_flush_all_caches();
+    drupal_flush_all_caches();
     $user_id = \Drupal::currentUser()->id();
     //$this->assertEquals(2, $user_id, "Current user_id");
     $user_has_admin_permission = \Drupal::currentUser()->hasPermission('administer webform'); //'administer webform submission' 'view any webform submission'
@@ -942,3 +942,5 @@ abstract class WebformCivicrmTestBase extends CiviCrmTestBase {
     return $this->getSession()->wait(10000, 'document.readyState === "complete"');
   }
 }
+
+// @TODO: Check drupal-off-canvas

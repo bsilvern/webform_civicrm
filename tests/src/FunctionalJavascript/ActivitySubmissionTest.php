@@ -90,13 +90,13 @@ final class ActivitySubmissionTest extends WebformCivicrmTestBase {
     $this->htmlOutput();
 
     $this->getSession()->getPage()->clickLink('Activities');
-    $this->getSession()->getPage()->selectFieldOption('activity_number_of_activity', 1);
+    $this->selectFieldOptionWaitAjax('activity_number_of_activity', 1);
     $this->assertSession()->waitForField('civicrm_1_activity_1_activity_subject');
     $this->htmlOutput();
 
     if ($select_activity) {
-      $this->getSession()->getPage()->selectFieldOption('civicrm_1_activity_1_activity_activity_type_id', '- User Select -');
-      $this->assertSession()->assertWaitOnAjaxRequest();
+      $this->selectFieldOptionWaitAjax('civicrm_1_activity_1_activity_activity_type_id', '- User Select -');
+      //$this->assertSession()->assertWaitOnAjaxRequest();
       $this->htmlOutput();
     }
 
